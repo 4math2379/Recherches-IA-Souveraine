@@ -1,0 +1,14 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
+scaleway/products/*/env/backend.hcl
+# Secrets
+.env
+*.pem
+# Divers
+.DS_Store
+__pycache__/
+node_modules/

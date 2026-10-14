@@ -1,0 +1,384 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mistral souverain sur Scaleway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: une colonne de lecture (~72ch) ; le schéma sort en pleine largeur dans son propre conteneur défilant. */
+:root {
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --fg: #141922;
+  --muted: #5A6475;
+  --line: #D3D9E2;
+  --accent: #2B55C9;      /* flux de requêtes, liens */
+  --serverless: #0F7F63;  /* facturation au token */
+  --gpu: #A86A12;         /* GPU dédiés */
+  --data: #5B4FB8;        /* données / RAG */
+  --tint-serverless: #E3F3EE;
+  --tint-gpu: #F7EEDF;
+  --tint-data: #ECEAF8;
+  --tint-neutral: #EEF1F5;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F131A; --surface: #161C26; --fg: #E6EAF0; --muted: #98A2B3; --line: #2C3544;
+    --accent: #7FA2FF; --serverless: #4CC9A4; --gpu: #E2A84E; --data: #A99CFF;
+    --tint-serverless: #12302A; --tint-gpu: #33270F; --tint-data: #221F3D; --tint-neutral: #1C2330;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F131A; --surface: #161C26; --fg: #E6EAF0; --muted: #98A2B3; --line: #2C3544;
+  --accent: #7FA2FF; --serverless: #4CC9A4; --gpu: #E2A84E; --data: #A99CFF;
+  --tint-serverless: #12302A; --tint-gpu: #33270F; --tint-data: #221F3D; --tint-neutral: #1C2330;
+  color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: grid; gap: 56px; }
+.read { max-width: 72ch; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 4.5vw, 2.9rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+section { display: grid; gap: 18px; min-width: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.12rem; color: var(--muted); }
+header { display: grid; gap: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--font-mono); font-size: 0.78rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--tint-neutral); padding: 1px 5px; border-radius: 4px; }
+
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+.diagram svg { display: block; min-width: 820px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px 24px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.93rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--tint-neutral); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tag { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+.tag.s { background: var(--tint-serverless); color: var(--serverless); }
+.tag.g { background: var(--tint-gpu); color: var(--gpu); }
+.tag.d { background: var(--tint-data); color: var(--data); }
+
+.phases { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.phase { position: relative; padding: 0 0 28px 28px; display: grid; gap: 8px; min-width: 0; }
+.phase:last-child { padding-bottom: 0; }
+.phase::before { content: ""; position: absolute; left: -8px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.phase .meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.phase ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.phase .exit { font-size: 0.9rem; color: var(--muted); }
+.phase .exit strong { color: var(--fg); font-weight: 600; }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.note p { font-size: 0.93rem; color: var(--muted); }
+.warn { border-color: var(--gpu); }
+.small { font-size: 0.85rem; color: var(--muted); }
+.sources { font-size: 0.85rem; color: var(--muted); display: grid; gap: 4px; padding-left: 1.1em; margin: 0; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="read">
+    <span class="eyebrow">Architecture cible · région fr-par</span>
+    <h1>Mistral souverain sur Scaleway</h1>
+    <p class="lede">Un serveur de modèles Mistral hébergé en France, qui démarre en serverless (paiement au token) et bascule sur des GPU dédiés quand le volume ou la confidentialité l'exigent. Les applications parlent à une seule API compatible OpenAI, quelle que soit l'option d'inférence derrière.</p>
+    <div class="chips">
+      <span class="chip">Generative APIs</span>
+      <span class="chip">Managed Inference</span>
+      <span class="chip">Kapsule GPU</span>
+      <span class="chip">PostgreSQL + pgvector</span>
+      <span class="chip">Données en UE</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="read"><h2>Schéma d'architecture</h2></div>
+    <div class="diagram" role="img" aria-label="Schéma : les applications passent par un Load Balancer puis une passerelle IA dans un réseau privé, qui route vers Generative APIs, Managed Inference ou des GPU Kapsule, avec une base RAG pgvector alimentée depuis Object Storage.">
+      <svg viewBox="0 0 1040 670" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="arrd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--data)"/>
+          </marker>
+        </defs>
+        <style>
+          .t { font-family: var(--font-body); font-size: 14px; font-weight: 600; fill: var(--fg); }
+          .s { font-family: var(--font-body); font-size: 12px; fill: var(--muted); }
+          .m { font-family: var(--font-mono); font-size: 11px; fill: var(--muted); letter-spacing: 0.04em; }
+          .flow { fill: none; stroke: var(--accent); stroke-width: 1.8; }
+          .flowd { fill: none; stroke: var(--data); stroke-width: 1.6; stroke-dasharray: 6 4; }
+        </style>
+
+        <!-- Région -->
+        <rect x="184" y="16" width="846" height="608" rx="14" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 5"/>
+        <text x="200" y="40" class="m">RÉGION FR-PAR · PARIS</text>
+
+        <!-- VPC -->
+        <rect x="362" y="150" width="450" height="452" rx="12" fill="var(--tint-neutral)" fill-opacity="0.55" stroke="var(--line)" stroke-width="1.5"/>
+        <text x="378" y="174" class="m">PRIVATE NETWORK (VPC)</text>
+
+        <!-- Clients -->
+        <rect x="16" y="250" width="148" height="124" rx="10" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.4"/>
+        <text x="30" y="276" class="t">Applications</text>
+        <text x="30" y="300" class="s">Apps métier (Laravel…)</text>
+        <text x="30" y="320" class="s">Agents, IDE, chatbots</text>
+        <text x="30" y="340" class="s">Back-office, scripts</text>
+        <text x="30" y="362" class="m">SDK OPENAI</text>
+
+        <!-- Ingress -->
+        <rect x="200" y="268" width="146" height="88" rx="10" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.4"/>
+        <text x="214" y="294" class="t">Load Balancer</text>
+        <text x="214" y="314" class="s">+ Edge Services</text>
+        <text x="214" y="338" class="m">TLS · WAF · DÉBIT</text>
+
+        <!-- Gateway -->
+        <rect x="380" y="264" width="176" height="96" rx="10" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="394" y="290" class="t">Passerelle IA</text>
+        <text x="394" y="310" class="s">LiteLLM sur Kapsule</text>
+        <text x="394" y="328" class="s">clés, quotas, routage</text>
+        <text x="394" y="348" class="m">API UNIQUE /v1</text>
+
+        <!-- Generative APIs -->
+        <rect x="604" y="54" width="196" height="84" rx="10" fill="var(--tint-serverless)" stroke="var(--serverless)" stroke-width="1.6"/>
+        <text x="618" y="80" class="t">Generative APIs</text>
+        <text x="618" y="100" class="s">Mistral Small, Medium, Nemo</text>
+        <text x="618" y="124" class="m">SERVERLESS · AU TOKEN</text>
+
+        <!-- Managed Inference -->
+        <rect x="604" y="186" width="196" height="84" rx="10" fill="var(--tint-gpu)" stroke="var(--gpu)" stroke-width="1.6"/>
+        <text x="618" y="212" class="t">Managed Inference</text>
+        <text x="618" y="232" class="s">Mistral dédié, L4 à H100</text>
+        <text x="618" y="256" class="m">ENDPOINT PRIVÉ · À L'HEURE</text>
+
+        <!-- Kapsule GPU -->
+        <rect x="604" y="294" width="196" height="84" rx="10" fill="var(--tint-gpu)" stroke="var(--gpu)" stroke-width="1.6"/>
+        <text x="618" y="320" class="t">Kapsule GPU + vLLM</text>
+        <text x="618" y="340" class="s">modèles affinés, fine-tuning</text>
+        <text x="618" y="364" class="m">OPTION PHASE 3</text>
+
+        <!-- pgvector -->
+        <rect x="604" y="404" width="196" height="76" rx="10" fill="var(--tint-data)" stroke="var(--data)" stroke-width="1.6"/>
+        <text x="618" y="430" class="t">PostgreSQL + pgvector</text>
+        <text x="618" y="450" class="s">index RAG, historique</text>
+        <text x="618" y="470" class="m">MANAGED DATABASE</text>
+
+        <!-- Serverless Jobs -->
+        <rect x="380" y="498" width="176" height="80" rx="10" fill="var(--tint-data)" stroke="var(--data)" stroke-width="1.6"/>
+        <text x="394" y="524" class="t">Serverless Jobs</text>
+        <text x="394" y="544" class="s">découpage, embeddings</text>
+        <text x="394" y="566" class="m">INGESTION</text>
+
+        <!-- Object Storage -->
+        <rect x="200" y="498" width="146" height="80" rx="10" fill="var(--tint-data)" stroke="var(--data)" stroke-width="1.6"/>
+        <text x="214" y="524" class="t">Object Storage</text>
+        <text x="214" y="544" class="s">documents sources</text>
+        <text x="214" y="566" class="m">S3 · CHIFFRÉ</text>
+
+        <!-- Sécurité / exploitation -->
+        <rect x="836" y="54" width="180" height="548" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"/>
+        <text x="852" y="80" class="m">SÉCURITÉ · EXPLOITATION</text>
+        <g>
+          <text x="852" y="116" class="t">IAM</text>
+          <text x="852" y="134" class="s">clés API par projet</text>
+          <text x="852" y="176" class="t">Secret Manager</text>
+          <text x="852" y="194" class="s">secrets des services</text>
+          <text x="852" y="236" class="t">Key Manager</text>
+          <text x="852" y="254" class="s">clés de chiffrement</text>
+          <text x="852" y="296" class="t">Cockpit</text>
+          <text x="852" y="314" class="s">métriques, logs, Grafana</text>
+          <text x="852" y="356" class="t">Audit Trail</text>
+          <text x="852" y="374" class="s">qui a fait quoi</text>
+          <text x="852" y="416" class="t">Container Registry</text>
+          <text x="852" y="434" class="s">images signées</text>
+          <text x="852" y="476" class="t">Terraform</text>
+          <text x="852" y="494" class="s">provider scaleway</text>
+          <line x1="852" y1="530" x2="1000" y2="530" stroke="var(--line)"/>
+          <text x="852" y="556" class="s">Tout reste en UE :</text>
+          <text x="852" y="576" class="s">aucun appel hors Scaleway</text>
+        </g>
+
+        <!-- Flux requêtes -->
+        <path class="flow" d="M164 312 H198" marker-end="url(#arr)"/>
+        <path class="flow" d="M346 312 H378" marker-end="url(#arr)"/>
+        <path class="flow" d="M468 264 V96 H602" marker-end="url(#arr)"/>
+        <text x="478" y="88" class="m">HTTPS · CLÉ IAM</text>
+        <path class="flow" d="M556 290 H580 V228 H602" marker-end="url(#arr)"/>
+        <path class="flow" d="M556 336 H602" marker-end="url(#arr)"/>
+        <path class="flow" d="M520 360 V442 H602" marker-end="url(#arr)"/>
+        <text x="528" y="400" class="m">RAG</text>
+
+        <!-- Flux ingestion -->
+        <path class="flowd" d="M346 538 H378" marker-end="url(#arrd)"/>
+        <path class="flowd" d="M556 538 H702 V482" marker-end="url(#arrd)"/>
+
+        <!-- Reprise -->
+        <text x="200" y="650" class="m">REPRISE D'ACTIVITÉ : NL-AMS OU PL-WAW (UE) · SAUVEGARDES PGVECTOR + OBJECT STORAGE RÉPLIQUÉ</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--tint-serverless);border-color:var(--serverless)"></i>Serverless, facturé au token</span>
+      <span><i class="sw" style="background:var(--tint-gpu);border-color:var(--gpu)"></i>GPU dédiés, facturés à l'heure</span>
+      <span><i class="sw" style="background:var(--tint-data);border-color:var(--data)"></i>Données et RAG</span>
+      <span><svg width="28" height="10" aria-hidden="true"><line x1="0" y1="5" x2="28" y2="5" stroke="var(--accent)" stroke-width="2"/></svg>Requêtes</span>
+      <span><svg width="28" height="10" aria-hidden="true"><line x1="0" y1="5" x2="28" y2="5" stroke="var(--data)" stroke-width="2" stroke-dasharray="6 4"/></svg>Ingestion</span>
+    </div>
+    <p class="read small">La passerelle est le seul point d'entrée. Elle porte l'authentification, les quotas par équipe, la journalisation et le routage : un même nom de modèle (par exemple <code>mistral-chat</code>) peut pointer vers Generative APIs au début, puis vers un endpoint Managed Inference sans changer une ligne côté application.</p>
+  </section>
+
+  <section>
+    <div class="read">
+      <h2>Quelle inférence pour quel besoin</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Option</th><th>Quand la choisir</th><th>Facturation</th><th>Limites</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tag s">Generative APIs</span></td>
+            <td>Démarrage, trafic irrégulier, prototypes, embeddings. Aucun serveur à gérer.</td>
+            <td>Au million de tokens. Premier million gratuit.</td>
+            <td>Catalogue imposé, infrastructure partagée, pas de modèle personnalisé.</td>
+          </tr>
+          <tr>
+            <td><span class="tag g">Managed Inference</span></td>
+            <td>Trafic régulier, latence garantie, données sensibles (endpoint dans le réseau privé), modèle importé depuis Hugging Face.</td>
+            <td>À l'heure, par GPU, qu'il serve ou non.</td>
+            <td>Coût fixe dès la mise en route. Dimensionner le GPU sur le modèle et le contexte.</td>
+          </tr>
+          <tr>
+            <td><span class="tag g">Kapsule GPU + vLLM</span></td>
+            <td>Modèle affiné maison, contrôle total du moteur de service, fine-tuning ponctuel.</td>
+            <td>Nœuds GPU à l'heure.</td>
+            <td>Vous exploitez tout : drivers, vLLM, montée en charge, mises à jour.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="read small">Règle de bascule : passer en dédié quand le coût mensuel en tokens dépasse le coût du GPU équivalent, ou dès que la donnée ne doit pas transiter par une infrastructure partagée. Pour Mistral Nemo, un L4 à environ 680 € par mois équivaut à quelque 3,4 milliards de tokens au tarif serverless ; pour des modèles plus gros, le seuil arrive bien plus tôt.</p>
+  </section>
+
+  <section>
+    <div class="read"><h2>Plan de déploiement</h2></div>
+    <div class="phases read">
+      <div class="phase">
+        <span class="meta">Phase 0 · 1 à 2 semaines</span>
+        <h3>Cadrage</h3>
+        <ul>
+          <li>Lister les cas d'usage, les données manipulées et leur sensibilité (RGPD, secret des affaires).</li>
+          <li>Estimer le volume de tokens par mois, la latence attendue et la taille de contexte.</li>
+          <li>Classer chaque cas d'usage au regard de l'AI Act.</li>
+          <li>Choisir les modèles candidats et vérifier leur licence (Apache 2.0 ou licence commerciale Mistral).</li>
+        </ul>
+        <p class="exit"><strong>Livrable :</strong> fiche par cas d'usage et jeu d'évaluation de 50 à 200 questions réelles.</p>
+      </div>
+      <div class="phase">
+        <span class="meta">Phase 1 · 2 à 3 semaines</span>
+        <h3>Preuve de concept serverless</h3>
+        <ul>
+          <li>Projet Scaleway dédié, IAM avec une clé API par application.</li>
+          <li>Passerelle LiteLLM (Serverless Containers ou petit cluster Kapsule) branchée sur Generative APIs.</li>
+          <li>RAG minimal : Object Storage, job d'ingestion, PostgreSQL avec pgvector.</li>
+          <li>Comparer Mistral Small et Mistral Medium sur le jeu d'évaluation : qualité, latence, coût par requête.</li>
+        </ul>
+        <p class="exit"><strong>Critère de sortie :</strong> qualité validée par les métiers, coût par requête connu.</p>
+      </div>
+      <div class="phase">
+        <span class="meta">Phase 2 · 4 à 6 semaines</span>
+        <h3>Pilote avec inférence dédiée</h3>
+        <ul>
+          <li>Déployer le modèle retenu sur Managed Inference, endpoint attaché au Private Network.</li>
+          <li>Infrastructure en code avec le provider Terraform Scaleway, CI/CD pour la passerelle.</li>
+          <li>Cockpit : latence, tokens par seconde, erreurs, coût par équipe. Alertes sur quotas.</li>
+          <li>Secrets dans Secret Manager, Audit Trail activé, masquage des données personnelles dans les logs.</li>
+        </ul>
+        <p class="exit"><strong>Critère de sortie :</strong> objectifs de latence tenus sur un vrai trafic, test d'intrusion de la passerelle.</p>
+      </div>
+      <div class="phase">
+        <span class="meta">Phase 3 · en continu</span>
+        <h3>Production et montée en charge</h3>
+        <ul>
+          <li>Deux réplicas minimum sur l'endpoint dédié, Generative APIs en secours dans la passerelle.</li>
+          <li>Si besoin, fine-tuning sur GPU H100 puis service du modèle affiné via Managed Inference ou vLLM sur Kapsule.</li>
+          <li>Reprise d'activité dans une seconde région européenne (nl-ams ou pl-waw).</li>
+          <li>Revue mensuelle des coûts et réévaluation à chaque nouvelle version de modèle Mistral.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="read">
+      <h2>Ordre de grandeur des coûts</h2>
+      <p class="small">Tarifs publics relevés par des sources tierces, hors TVA. À confirmer sur la page de prix Scaleway avant tout engagement.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Étape</th><th>Composants principaux</th><th>Coût mensuel estimé</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Preuve de concept</td>
+            <td>Generative APIs (Mistral Nemo à 0,20 € par million de tokens, premier million gratuit), petit Kapsule, PostgreSQL d'entrée de gamme, Object Storage</td>
+            <td class="num">50 à 250 €</td>
+          </tr>
+          <tr>
+            <td>Pilote</td>
+            <td>Managed Inference : Mistral 7B sur L4 à 0,93 € par heure, ou Mistral Nemo sur H100 à 3,40 € par heure, plus la pile de la preuve de concept</td>
+            <td class="num">800 à 2 800 €</td>
+          </tr>
+          <tr>
+            <td>Production</td>
+            <td>Deux réplicas dédiés, base haute disponibilité, observabilité, reprise dans une seconde région</td>
+            <td class="num">à partir de 5 000 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="read"><h2>Souveraineté et conformité</h2></div>
+    <div class="notes">
+      <div class="note">
+        <h3>Hébergement et juridiction</h3>
+        <p>Scaleway est une société française. Les données et l'inférence restent en région Paris, avec des régions de secours à Amsterdam et Varsovie. Mistral AI fait tourner une partie de sa production chez Scaleway.</p>
+      </div>
+      <div class="note warn">
+        <h3>SecNumCloud</h3>
+        <p>La qualification SecNumCloud de Scaleway est en cours, pas encore acquise d'après les sources consultées. Si un client public ou un OIV l'exige, vérifier le statut et le périmètre des services qualifiés avant de s'engager.</p>
+      </div>
+      <div class="note">
+        <h3>Données et modèles</h3>
+        <p>Ne jamais envoyer de données personnelles en clair dans les prompts sans base légale. Conserver les prompts et réponses le moins longtemps possible. Vérifier que la licence du modèle autorise l'usage prévu, en particulier pour le self-hosting.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="read">
+    <h2>Sources</h2>
+    <ul class="sources">
+      <li><a href="https://scaleway.com/fr/tarifs/model-as-a-service" target="_blank" rel="noopener">Scaleway, tarifs Model as a Service</a></li>
+      <li><a href="https://european-alternatives.eu/product/scaleway-generative-apis" target="_blank" rel="noopener">European Alternatives, Scaleway Generative APIs</a></li>
+      <li><a href="https://custom.typingmind.com/tools/estimate-llm-usage-costs/scaleway/mistral-medium-3-5-128b" target="_blank" rel="noopener">TypingMind, Mistral Medium 3.5 chez Scaleway</a></li>
+      <li><a href="https://www.spheron.network/blog/scaleway-h100-pricing-2026/" target="_blank" rel="noopener">Spheron, prix H100 Scaleway 2026</a></li>
+      <li><a href="https://next.ink/165032/secnumcloud-scaleway-passe-j0-sans-aucune-reserve-et-vise-une-qualification-fin-2025/" target="_blank" rel="noopener">Next, SecNumCloud et Scaleway</a></li>
+    </ul>
+  </section>
+</div>
+
+</body></html>

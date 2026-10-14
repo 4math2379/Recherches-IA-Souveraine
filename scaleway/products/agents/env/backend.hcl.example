@@ -1,0 +1,4 @@
+# Copy to backend.hcl (git-ignored) or pass with -backend-config.
+# Credentials: AWS_ACCESS_KEY_ID=$SCW_ACCESS_KEY, AWS_SECRET_ACCESS_KEY=$SCW_SECRET_KEY
+bucket = "souverain-tfstate-CHANGE-ME"
+key    = "sovereign-ai/agents.tfstate"

@@ -1,0 +1,430 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Usine d'IA souveraine NVIDIA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --nv:#4A7A00; --nv-soft:#EEF6E0; --qn:#6D3FC0; --qn-soft:#F1EBFB;
+  --paper:#F3F5F2; --surface:#FFFFFF; --ink:#18211E; --muted:#56635E; --line:#C5CFCA;
+  --accent:#0E7C66; --accent-soft:#DCEEE8; --amber:#9C5C14; --amber-soft:#F4E7D5; --warn:#B3402B;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark; --nv:#8FD12A; --nv-soft:#1E2B10; --qn:#B394F0; --qn-soft:#261C38;
+    --paper:#101614; --surface:#172019; --ink:#E3EAE6; --muted:#98A69F; --line:#33413B;
+    --accent:#44C4A4; --accent-soft:#15332B; --amber:#E0A25C; --amber-soft:#382916; --warn:#EC7F68;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark; --nv:#8FD12A; --nv-soft:#1E2B10; --qn:#B394F0; --qn-soft:#261C38;
+  --paper:#101614; --surface:#172019; --ink:#E3EAE6; --muted:#98A69F; --line:#33413B;
+  --accent:#44C4A4; --accent-soft:#15332B; --amber:#E0A25C; --amber-soft:#382916; --warn:#EC7F68;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;padding-inline:20px;padding-block:32px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+header{display:flex;flex-direction:column;gap:14px;border-bottom:1px solid var(--line);padding-bottom:24px}
+.brand{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;min-height:44px}
+.logo img{height:44px;width:auto}
+.logo .word{font-family:var(--cond);font-weight:600;font-size:20px;letter-spacing:.04em;border:1.5px solid var(--ink);padding:6px 12px}
+.byline{font-size:13px;color:var(--muted);text-align:right}
+.byline strong{display:block;color:var(--ink);font-size:15px;font-weight:600}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--cond);font-weight:600;font-size:clamp(28px,4.2vw,44px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--cond);font-weight:600;font-size:24px;margin:0;text-wrap:balance}
+h3{font-family:var(--cond);font-weight:600;font-size:17px;margin:0}
+p{margin:0;max-width:72ch}
+.lede{font-size:17px;color:var(--muted);max-width:80ch}
+.lede strong{color:var(--ink);font-weight:600}
+code{font-family:var(--mono);font-size:.88em}
+section{display:flex;flex-direction:column;gap:18px}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:0}
+.spec div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.spec dt{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.spec dd{margin:0;font-family:var(--mono);font-size:18px;font-weight:500;font-variant-numeric:tabular-nums}
+.spec dd.acc{color:var(--accent)}
+figure{margin:0;display:flex;flex-direction:column;gap:10px}
+.diagram{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:12px}
+.diagram svg{display:block;width:100%;min-width:900px;height:auto;color:var(--ink)}
+figcaption{font-size:13px;color:var(--muted);max-width:92ch}
+.legend{display:flex;flex-wrap:wrap;gap:20px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:26px;height:14px;background:var(--surface)}
+.sw.solid{border:1.4px solid var(--ink)}
+.sw.dash{border:1.4px dashed var(--muted)}
+.sw.dot{border:1.6px dotted var(--amber);background:var(--amber-soft)}
+.sw.acc{border:1.8px solid var(--accent);background:var(--accent-soft)}
+/* SVG roles */
+.bx{fill:var(--surface);stroke:var(--ink);stroke-width:1.2}
+.bx-soft{fill:var(--paper);stroke:var(--line);stroke-width:1}
+.bx-acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.8}
+.bx-dash{fill:var(--surface);stroke:var(--muted);stroke-width:1.3;stroke-dasharray:6 4}
+.bx-dot{fill:var(--amber-soft);stroke:var(--amber);stroke-width:1.6;stroke-dasharray:2 3}
+.t{fill:var(--ink);font-family:var(--sans);font-size:14px;font-weight:600}
+.ts{fill:var(--muted);font-family:var(--mono);font-size:11.5px}
+.tm{fill:var(--ink);font-family:var(--mono);font-size:11.5px}
+.ta{fill:var(--accent);font-family:var(--mono);font-size:11.5px;font-weight:500}
+.tw{fill:var(--warn);font-family:var(--mono);font-size:11.5px;font-weight:500}
+.tamb{fill:var(--amber);font-family:var(--mono);font-size:11.5px;font-weight:500}
+.lane{fill:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+.ln{stroke:var(--ink);stroke-width:1.3;fill:none}
+.ln-acc{stroke:var(--accent);stroke-width:2;fill:none}
+.ln-dash{stroke:var(--muted);stroke-width:1.3;fill:none;stroke-dasharray:6 4}
+.ah{fill:var(--ink)} .ah-acc{fill:var(--accent)} .ah-mut{fill:var(--muted)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.pair>div{display:flex;flex-direction:column;gap:8px}
+.tag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:3px;align-self:start}
+.tag.ok{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.tag.plan{background:var(--surface);color:var(--muted);border:1px dashed var(--muted)}
+pre{margin:0;overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink)}
+pre .k{color:var(--accent)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.why>div{display:flex;flex-direction:column;gap:8px;border-top:2px solid var(--accent);padding-top:12px}
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--paper)}
+tr:last-child td{border-bottom:0}
+td.ev{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.acc{color:var(--accent);font-weight:600}
+.amb{color:var(--amber);font-weight:600}
+.note{font-size:13px;color:var(--muted)}
+.callout{border:1px solid var(--amber);background:var(--amber-soft);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.callout p{max-width:none}
+.issues{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface)}
+.issue{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:14px;border-bottom:1px solid var(--line)}
+.issue:last-child{border-bottom:0}
+.pill{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:3px;align-self:start;text-align:center}
+.pill.hi{background:var(--warn);color:var(--surface)}
+.pill.md{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber)}
+.pill.lo{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.issue p{max-width:none}
+.issue .loc{font-family:var(--mono);font-size:12px;color:var(--muted)}
+@media (max-width:560px){.issue{grid-template-columns:1fr;gap:6px}.pill{justify-self:start}.byline{text-align:left}}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+footer strong{color:var(--ink)}
+
+.steps{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);counter-increment:s}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(s);font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+.steps li p{max-width:none}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:var(--accent-soft)}
+.chart svg{display:block;width:100%;min-width:620px;height:auto}
+.bar{fill:var(--muted)} .bar.sel{fill:var(--accent)} .bar.oai{fill:var(--amber)}
+.bar:hover{opacity:.8}
+.bx-nv{fill:var(--nv-soft);stroke:var(--nv);stroke-width:2.2}
+.bx-nvl{fill:var(--surface);stroke:var(--nv);stroke-width:1.4}
+.bx-qn{fill:var(--qn-soft);stroke:var(--qn);stroke-width:2.2}
+.bx-qnl{fill:var(--surface);stroke:var(--qn);stroke-width:1.6}
+.tnv{fill:var(--nv);font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em}
+.tqn{fill:var(--qn);font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em}
+.tnvs{fill:var(--nv);font-family:var(--mono);font-size:11.5px;font-weight:500}
+.tqns{fill:var(--qn);font-family:var(--mono);font-size:11.5px;font-weight:500}
+.ln-nv{stroke:var(--nv);stroke-width:2;fill:none}
+.ln-qn{stroke:var(--qn);stroke-width:2;fill:none}
+.ah-nv{fill:var(--nv)} .ah-qn{fill:var(--qn)}
+.diagram.sq{max-width:860px}
+.diagram.sq svg{min-width:640px}
+.tag.qn{background:var(--qn-soft);color:var(--qn);border:1px solid var(--qn)}
+.spec dd.qn{color:var(--qn)}
+ul.plain{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:6px}
+.src a{color:var(--accent)}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 150 52" width="150" height="52" role="img" aria-label="CCL Consulting">
+        <text x="0" y="22" fill="currentColor" font-family="'IBM Plex Sans',system-ui,sans-serif" font-weight="700" font-size="24" letter-spacing="-0.5">Ccl</text>
+        <path d="M47,21 H66 A5.5,5.5 0 0 0 66,10 A8,8 0 0 0 51.5,7.5 A6.5,6.5 0 0 0 47,21 Z" fill="none" stroke="#1DB38A" stroke-width="2.6" stroke-linejoin="round"/>
+        <text x="0" y="47" fill="currentColor" font-family="'IBM Plex Sans',system-ui,sans-serif" font-weight="700" font-size="24" letter-spacing="-0.5">Consulting.</text>
+      </svg>
+    </div>
+    <div class="byline"><strong>Rahma Keller Sinien</strong>AI Architect · CCL Consulting</div>
+  </div>
+  <span class="eyebrow">Note technique · partenariat NVIDIA · infrastructure souveraine sur site</span>
+  <h1>Usine d'IA souveraine NVIDIA</h1>
+  <p class="lede">Héberger chez le client ses propres serveurs de modèles, relier les GPU par le réseau <strong>NVIDIA Quantum InfiniBand</strong>, et préparer le calcul hybride <strong>GPU + processeur quantique</strong> avec CUDA-Q et NVQLink. Cette note résume les technologies, donne l'architecture cible et explique ce que chaque brique apporte.</p>
+</header>
+
+<div class="callout">
+  <p><strong>Le PDF NVIDIA transmis n'a pas pu être lu</strong> : son domaine d'hébergement est bloqué par le réseau de l'environnement de travail. La synthèse ci-dessous s'appuie sur les pages publiques de NVIDIA et la presse spécialisée sur la gamme Quantum-X800, Quantum-X Photonics, NVQLink et CUDA-Q. Elle sera recalée sur le document dès qu'il sera accessible.</p>
+</div>
+
+<section aria-labelledby="clar-h">
+  <h2 id="clar-h">« Quantum » chez NVIDIA : deux familles distinctes</h2>
+  <div class="pair">
+    <div>
+      <span class="tag ok">NVIDIA Quantum InfiniBand</span>
+      <p>C'est le <strong>nom commercial des commutateurs réseau InfiniBand</strong> (Quantum-2, Quantum-X800, Quantum-X Photonics). Ils relient les GPU entre eux pour l'entraînement, le fine-tuning et la simulation. Ils ne font pas de calcul quantique.</p>
+    </div>
+    <div>
+      <span class="tag qn">Calcul quantique NVIDIA</span>
+      <p>C'est la plateforme <strong>CUDA-Q</strong> (programmation hybride GPU + QPU) et l'interconnexion <strong>NVQLink</strong>, qui relie un processeur quantique (QPU) aux GPU avec une latence de quelques microsecondes. NVQLink passe par Ethernet RoCE, pas par InfiniBand.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="sum-h">
+  <h2 id="sum-h">Ce qu'apporte la gamme Quantum-X800</h2>
+  <dl class="spec">
+    <div><dt>Débit par port</dt><dd class="acc">800 Gb/s</dd></div>
+    <div><dt>Ports par commutateur</dt><dd>144</dd></div>
+    <div><dt>Capacité</dt><dd>115 Tb/s</dd></div>
+    <div><dt>Calcul dans le réseau</dt><dd>14,4 TFLOPS</dd></div>
+    <div><dt>Latence port à port</dt><dd>&lt; 100 ns</dd></div>
+    <div><dt>Optique intégrée (CPO)</dt><dd>3,5× moins d'énergie</dd></div>
+    <div><dt>NVQLink GPU ↔ QPU</dt><dd class="qn">&lt; 4 µs</dd></div>
+  </dl>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Brique</th><th>Ce que c'est</th><th>Chiffres publics</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Quantum-X800 Q3400</strong></td><td>Commutateur InfiniBand XDR de cœur de réseau</td><td class="num">144 ports × 800 Gb/s · 72 cages OSFP · SerDes 200 Gb/s</td></tr>
+        <tr><td><strong>Quantum-X800 Q3200</strong></td><td>Format 2U refroidi par air, deux commutateurs indépendants : adapté aux clusters sur site de taille moyenne</td><td class="num">2 × 36 ports × 800 Gb/s · 28,8 Tb/s</td></tr>
+        <tr><td><strong>Quantum-X Photonics (Q3450)</strong></td><td>Version à optique co-intégrée (silicon photonics), refroidissement liquide</td><td class="num">144 × 800 Gb/s · 115 Tb/s · perte 22 dB → ~4 dB</td></tr>
+        <tr><td><strong>SHARP v4</strong></td><td>Les commutateurs calculent eux-mêmes les réductions (all-reduce) de l'entraînement distribué</td><td class="num">14,4 TFLOPS, 9× la génération NDR</td></tr>
+        <tr><td><strong>ConnectX-8 SuperNIC</strong></td><td>Carte réseau 800 Gb/s de chaque serveur GPU</td><td class="num">800 Gb/s par GPU</td></tr>
+        <tr><td><strong>Fonctions réseau</strong></td><td>RDMA, routage adaptatif, contrôle de congestion par télémétrie, auto-réparation des liens</td><td>—</td></tr>
+        <tr><td><strong>CUDA-Q + NVQLink</strong></td><td>Programmation hybride et lien temps réel GPU ↔ contrôleur quantique ; API <code>cudaq-realtime</code> publique depuis la GTC 2026</td><td class="num">&lt; 4 µs validé sur serveurs Dell</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="arch-h">
+  <h2 id="arch-h">Architecture cible sur site</h2>
+  <figure>
+    <div class="diagram sq">
+      <svg viewBox="0 0 1000 1000" role="img" aria-label="Datacenter souverain du client. En haut, l'accès des utilisateurs par Ethernet Spectrum-X et DPU BlueField-3. À gauche, le pod de calcul IA : serveurs GPU HGX avec cartes ConnectX-8 à 800 Gb/s reliés par le réseau InfiniBand Quantum-X800 avec SHARP. À droite, la zone quantique hybride : hôte temps réel Grace Blackwell avec CUDA-Q, relié par NVQLink en Ethernet RoCE à moins de 4 microsecondes au contrôleur quantique et au processeur quantique. En bas, stockage parallèle, charges de travail et exploitation.">
+        <defs>
+          <marker id="n1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+          <marker id="n2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah-nv"/></marker>
+          <marker id="n3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah-qn"/></marker>
+        </defs>
+        <rect x="10" y="10" width="980" height="980" fill="none" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="8 5"/>
+        <text x="28" y="38" class="lane">DATACENTER DU CLIENT · SUR SITE · SOUVERAIN</text>
+        <text x="972" y="38" class="ts" text-anchor="end">données, poids et journaux restent sur site</text>
+
+        <!-- Access -->
+        <rect x="30" y="56" width="940" height="84" class="bx"/>
+        <text x="46" y="82" class="t">Accès et réseau front-end</text>
+        <text x="46" y="104" class="ts">Ethernet Spectrum-X · DPU BlueField-3 : isolation des locataires, chiffrement, pare-feu matériel</text>
+        <text x="46" y="124" class="ts">utilisateurs : ingénieurs procédé, agents IA, applications métier (API OpenAI-compatible des serveurs de modèles)</text>
+
+        <!-- AI pod -->
+        <rect x="30" y="164" width="560" height="520" class="bx-nv"/>
+        <text x="46" y="190" class="tnv">POD DE CALCUL IA</text>
+        <text x="46" y="212" class="t">Serveurs GPU NVIDIA · réseau de calcul InfiniBand</text>
+
+        <rect x="46" y="228" width="256" height="92" class="bx"/>
+        <text x="58" y="252" class="t">Serveur GPU 1</text>
+        <text x="58" y="272" class="ts">HGX · 8 GPU · NVLink</text>
+        <text x="58" y="290" class="tnvs">ConnectX-8 · 800 Gb/s</text>
+        <text x="58" y="308" class="ts">serveur de modèles</text>
+        <rect x="318" y="228" width="256" height="92" class="bx"/>
+        <text x="330" y="252" class="t">Serveur GPU 2</text>
+        <text x="330" y="272" class="ts">HGX · 8 GPU · NVLink</text>
+        <text x="330" y="290" class="tnvs">ConnectX-8 · 800 Gb/s</text>
+        <text x="330" y="308" class="ts">fine-tuning</text>
+        <rect x="46" y="336" width="256" height="92" class="bx"/>
+        <text x="58" y="360" class="t">Serveur GPU 3</text>
+        <text x="58" y="380" class="ts">HGX · 8 GPU · NVLink</text>
+        <text x="58" y="398" class="tnvs">ConnectX-8 · 800 Gb/s</text>
+        <text x="58" y="416" class="ts">simulation, surrogates</text>
+        <rect x="318" y="336" width="256" height="92" class="bx"/>
+        <text x="330" y="360" class="t">Serveur GPU N</text>
+        <text x="330" y="380" class="ts">extension par nœuds</text>
+        <text x="330" y="398" class="tnvs">ConnectX-8 · 800 Gb/s</text>
+        <text x="330" y="416" class="ts">même fabric</text>
+
+        <g class="ln-nv">
+          <line x1="174" y1="320" x2="174" y2="332"/>
+          <line x1="446" y1="320" x2="446" y2="332"/>
+          <line x1="174" y1="428" x2="210" y2="476"/>
+          <line x1="446" y1="428" x2="410" y2="476"/>
+          <line x1="140" y1="428" x2="140" y2="476"/>
+          <line x1="480" y1="428" x2="480" y2="476"/>
+        </g>
+
+        <rect x="46" y="476" width="528" height="192" class="bx-soft"/>
+        <text x="62" y="500" class="t">Fabric NVIDIA Quantum-X800 · InfiniBand XDR</text>
+        <rect x="62" y="514" width="236" height="64" class="bx-nvl"/>
+        <text x="74" y="538" class="tnvs">Feuilles · Q3200</text>
+        <text x="74" y="556" class="ts">2 × 36 ports · 800 Gb/s</text>
+        <text x="74" y="572" class="ts">2U refroidi par air</text>
+        <rect x="322" y="514" width="236" height="64" class="bx-nvl"/>
+        <text x="334" y="538" class="tnvs">Cœur · Q3400 / Q3450</text>
+        <text x="334" y="556" class="ts">144 ports · 115 Tb/s</text>
+        <text x="334" y="572" class="ts">CPO, refroidissement liquide</text>
+        <text x="62" y="604" class="tnvs">SHARP v4 · 14,4 TFLOPS dans le réseau</text>
+        <text x="62" y="624" class="ts">RDMA · routage adaptatif · contrôle de congestion</text>
+        <text x="62" y="644" class="ts">latence &lt; 100 ns · auto-réparation des liens</text>
+
+        <!-- Quantum zone -->
+        <rect x="620" y="164" width="350" height="520" class="bx-qn"/>
+        <text x="636" y="190" class="tqn">ZONE QUANTIQUE HYBRIDE</text>
+        <text x="636" y="212" class="t">CUDA-Q · NVQLink</text>
+
+        <rect x="636" y="228" width="318" height="96" class="bx"/>
+        <text x="648" y="252" class="t">Hôte temps réel GPU</text>
+        <text x="648" y="272" class="ts">Grace Blackwell</text>
+        <text x="648" y="290" class="tqns">CUDA-Q · cudaq-realtime</text>
+        <text x="648" y="308" class="ts">décodage de correction d'erreurs</text>
+
+        <rect x="636" y="350" width="318" height="78" class="bx-qnl"/>
+        <text x="648" y="374" class="t">NVQLink</text>
+        <text x="648" y="394" class="tqns">Ethernet RoCE · latence &lt; 4 µs</text>
+        <text x="648" y="412" class="ts">interconnexion ouverte GPU ↔ QPU</text>
+
+        <rect x="636" y="454" width="318" height="78" class="bx"/>
+        <text x="648" y="478" class="t">Contrôleur quantique</text>
+        <text x="648" y="498" class="ts">génération et lecture des impulsions</text>
+        <text x="648" y="516" class="ts">compatible NVQLink</text>
+
+        <rect x="636" y="558" width="318" height="110" class="bx"/>
+        <text x="648" y="582" class="t">Processeur quantique (QPU)</text>
+        <text x="648" y="602" class="ts">écosystème français NVQLink :</text>
+        <text x="648" y="620" class="tqns">Alice &amp; Bob · Pasqal · Quandela</text>
+        <text x="648" y="640" class="ts">sur site ou accès distant (GENCI)</text>
+        <text x="648" y="658" class="ts">qubits chats, atomes neutres, photons</text>
+
+        <g>
+          <line x1="795" y1="324" x2="795" y2="346" class="ln-qn" marker-end="url(#n3)"/>
+          <line x1="795" y1="428" x2="795" y2="450" class="ln-qn" marker-end="url(#n3)"/>
+          <line x1="795" y1="532" x2="795" y2="554" class="ln-qn" marker-end="url(#n3)"/>
+        </g>
+        <path d="M574,560 L605,560 L605,276 L632,276" class="ln-nv" marker-end="url(#n2)"/>
+        <text x="600" y="460" class="ts" text-anchor="end" transform="rotate(-90 600 460)">GPU ↔ hôte</text>
+
+        <line x1="300" y1="140" x2="300" y2="160" class="ln" marker-end="url(#n1)"/>
+        <line x1="795" y1="140" x2="795" y2="160" class="ln" marker-end="url(#n1)"/>
+
+        <!-- Bottom -->
+        <rect x="30" y="708" width="300" height="170" class="bx"/>
+        <text x="46" y="734" class="t">Stockage</text>
+        <text x="46" y="756" class="ts">système de fichiers parallèle NVMe</text>
+        <text x="46" y="774" class="ts">réseau de stockage dédié</text>
+        <text x="46" y="798" class="ts">jeux de données, poids des</text>
+        <text x="46" y="816" class="ts">modèles, points de reprise</text>
+        <text x="46" y="840" class="ts">chiffrement géré par DPU</text>
+
+        <rect x="350" y="708" width="300" height="170" class="bx-nv"/>
+        <text x="366" y="734" class="tnv">CHARGES DE TRAVAIL</text>
+        <text x="366" y="758" class="ts">· fine-tuning de modèles ouverts</text>
+        <text x="366" y="778" class="ts">  (ex. Mistral, LoRA)</text>
+        <text x="366" y="798" class="ts">· inférence vLLM / NVIDIA NIM</text>
+        <text x="366" y="818" class="ts">· simulation et modèles de substitution</text>
+        <text x="366" y="838" class="ts">  (ex. four de calcination)</text>
+        <text x="366" y="858" class="tqns">· algorithmes hybrides GPU + QPU</text>
+
+        <rect x="670" y="708" width="300" height="170" class="bx"/>
+        <text x="686" y="734" class="t">Exploitation</text>
+        <text x="686" y="756" class="ts">NVIDIA Mission Control</text>
+        <text x="686" y="774" class="ts">NVIDIA AI Enterprise</text>
+        <text x="686" y="798" class="ts">télémétrie réseau UFM</text>
+        <text x="686" y="816" class="ts">ordonnancement Slurm / Kubernetes</text>
+        <text x="686" y="840" class="ts">supervision énergie et refroidissement</text>
+
+        <line x1="180" y1="684" x2="180" y2="704" class="ln" marker-end="url(#n1)"/>
+        <line x1="500" y1="684" x2="500" y2="704" class="ln" marker-end="url(#n1)"/>
+        <line x1="820" y1="684" x2="820" y2="704" class="ln" marker-end="url(#n1)"/>
+
+        <rect x="30" y="902" width="940" height="68" class="bx-soft"/>
+        <text x="46" y="928" class="t">Énergie et refroidissement</text>
+        <text x="46" y="950" class="ts">liquide pour Q3450 (CPO) et Grace Blackwell · air suffisant pour Q3200 et les serveurs HGX à air</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--nv-soft);border:2px solid var(--nv)"></i>calcul IA et réseau InfiniBand NVIDIA</span>
+      <span><i class="sw" style="background:var(--qn-soft);border:2px solid var(--qn)"></i>calcul quantique hybride</span>
+      <span><i class="sw solid"></i>composant du datacenter</span>
+    </div>
+    <figcaption>Deux réseaux distincts : InfiniBand Quantum-X800 pour les échanges entre GPU (entraînement, fine-tuning, simulation), Ethernet RoCE via NVQLink pour la boucle temps réel avec le processeur quantique. Tout est hébergé chez le client.</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="adv-h">
+  <h2 id="adv-h">L'avantage, brique par brique</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Brique</th><th>Ce que le client y gagne</th></tr></thead>
+      <tbody>
+        <tr><td>Serveurs de modèles sur site</td><td>Données industrielles, poids fine-tunés et journaux ne quittent jamais l'usine : aucune exposition au Cloud Act, pas de dépendance à la disponibilité d'un cloud.</td></tr>
+        <tr><td>InfiniBand Quantum-X800</td><td>800 Gb/s par GPU et moins de 100 ns de latence : un fine-tuning réparti sur plusieurs serveurs ne passe pas son temps à attendre le réseau.</td></tr>
+        <tr><td>SHARP v4</td><td>Les commutateurs font eux-mêmes les sommes de gradients de l'entraînement distribué : moins de trafic, des itérations plus rapides.</td></tr>
+        <tr><td>Optique co-intégrée (Q3450)</td><td>3,5× moins d'énergie réseau, 10× plus de résilience que les modules optiques enfichables : un argument direct sur la facture électrique du site.</td></tr>
+        <tr><td>Routage adaptatif et auto-réparation</td><td>Un lien défaillant est contourné sans arrêter le job : moins de reprises d'entraînement perdues.</td></tr>
+        <tr><td>CUDA-Q + NVQLink</td><td>Le client prépare dès maintenant le calcul hybride GPU + quantique avec des QPU français, sans réécrire ses applications quand le matériel quantique mûrira.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="size-h">
+  <h2 id="size-h">Trois niveaux de déploiement</h2>
+  <div class="why">
+    <div>
+      <h3>Niveau 1 · Inférence</h3>
+      <p>1 à 2 serveurs GPU. Les GPU d'un même serveur communiquent par NVLink : <strong>pas besoin de fabric InfiniBand</strong>. Suffit pour servir des modèles fine-tunés à une usine.</p>
+    </div>
+    <div>
+      <h3>Niveau 2 · Fine-tuning et simulation</h3>
+      <p>4 à 32 serveurs reliés par un Quantum-X800 Q3200 (2U, refroidi par air). Le bon point d'entrée pour un industriel qui entraîne ses propres modèles.</p>
+    </div>
+    <div>
+      <h3>Niveau 3 · Usine d'IA et quantique</h3>
+      <p>Cœur Q3400 ou Q3450 photonique, plusieurs centaines de GPU, zone NVQLink avec QPU. Réservé aux grands groupes et aux centres de calcul.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="lim-h">
+  <h2 id="lim-h">Points de vigilance</h2>
+  <div class="issues">
+    <div class="issue"><span class="pill md">Quantique</span><div><p><strong>L'avantage quantique reste à démontrer sur les cas industriels.</strong> NVQLink et CUDA-Q servent aujourd'hui à la recherche (correction d'erreurs, algorithmes hybrides). À présenter comme une préparation de la plateforme, pas comme un gain de production immédiat.</p></div></div>
+    <div class="issue"><span class="pill md">Infrastructure</span><div><p><strong>Densité électrique et refroidissement liquide.</strong> Le Q3450 photonique et les serveurs Grace Blackwell imposent un refroidissement liquide ; à valider avec le génie climatique du site avant toute commande.</p></div></div>
+    <div class="issue"><span class="pill lo">Dimensionnement</span><div><p><strong>Ne pas surdimensionner le réseau.</strong> Pour l'inférence seule, un ou deux serveurs suffisent sans InfiniBand ; la fabric se justifie à partir de l'entraînement réparti sur plusieurs serveurs.</p></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="part-h">
+  <h2 id="part-h">Chemin de partenariat NVIDIA</h2>
+  <ol class="steps">
+    <li><p><strong>NVIDIA Partner Network (NPN).</strong> Viser les compétences publiées par NVIDIA les plus proches de ce projet : Networking (InfiniBand), DGX AI Compute Systems, NVIDIA Enterprise Software. Les déploiements DGX SuperPOD sont réalisés par des partenaires certifiés.</p></li>
+    <li><p><strong>Démonstrateur de niveau 2.</strong> Un pod de fine-tuning sur site avec Quantum-X800 Q3200, appliqué à un cas industriel client : la référence concrète à présenter à NVIDIA.</p></li>
+    <li><p><strong>Volet quantique.</strong> Se rapprocher de l'écosystème NVQLink français (Alice &amp; Bob, Pasqal, Quandela, GENCI) pour un pilote CUDA-Q sur une sous-tâche d'optimisation.</p></li>
+  </ol>
+</section>
+
+<section aria-labelledby="src-h">
+  <h2 id="src-h">Sources</h2>
+  <ul class="plain src">
+    <li><a href="https://www.nvidia.com/en-us/networking/products/infiniband/quantum-x800/">NVIDIA Quantum-X800 InfiniBand Platform</a></li>
+    <li><a href="https://docs.nvidia.com/networking/display/XDRSwitchesUM/Introduction">NVIDIA Q32xx et Q34xx XDR Switch Systems User Manual</a></li>
+    <li><a href="https://developer.nvidia.com/blog/scaling-ai-factories-with-co-packaged-optics-for-better-power-efficiency/">NVIDIA : Scaling AI Factories with Co-Packaged Optics</a></li>
+    <li><a href="https://networking-docs.nvidia.com/nvidia-quantum-x800-xdr-clusters">NVIDIA Quantum-X800 (XDR) Clusters</a></li>
+    <li><a href="https://nvidianews.nvidia.com/news/scientific-supercomputing-centers-nvqlink-grace-blackwell-quantum-processors">NVIDIA : supercomputing centers adopt NVQLink</a></li>
+    <li><a href="https://nvidia.github.io/cuda-quantum/blogs/blog/2026/03/16/launching-cudaq-realtime/">CUDA-Q : cudaq-realtime</a></li>
+    <li><a href="https://www.hpcwire.com/2026/01/21/how-nvidia-plans-to-usher-in-the-age-of-the-quantum-accelerated-supercomputers-with-nvqlink-and-cuda-q/">HPCwire : NVQLink et CUDA-Q</a></li>
+    <li><a href="https://thequantuminsider.com/2026/09/30/french-national-quantum-update-september-2026/">The Quantum Insider : French National Quantum Update, septembre 2026</a></li>
+    <li><a href="https://www.nvidia.com/en-eu/data-center/where-to-buy-dgx-systems/">NVIDIA : Buy DGX Systems Through NVIDIA Partner Network</a></li>
+  </ul>
+</section>
+
+<footer>
+  <span><strong>Rahma Keller Sinien</strong> · AI Architect · CCL Consulting</span>
+  <span>Note technique NVIDIA · octobre 2026</span>
+</footer>
+</div>
+
+</body></html>

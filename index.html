@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recherches IA souveraine</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root { --bg:#F3F5F2; --surface:#FFFFFF; --fg:#18211E; --muted:#56635E; --line:#C5CFCA; --accent:#0E7C66;
+  --sans:"IBM Plex Sans",system-ui,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace; }
+@media (prefers-color-scheme: dark) { :root { --bg:#101614; --surface:#172019; --fg:#E3EAE6; --muted:#98A69F; --line:#33413B; --accent:#44C4A4; color-scheme:dark; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 var(--sans); padding-inline:20px; padding-block:40px 64px; }
+main { max-width:860px; margin:0 auto; display:grid; gap:36px; }
+h1 { font-size:clamp(28px,4vw,40px); line-height:1.1; margin:0; }
+h2 { font-size:20px; margin:0 0 10px; }
+p { margin:0; max-width:70ch; color:var(--muted); }
+.eyebrow { font:12px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+ul { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+li a { display:grid; gap:2px; padding:12px 14px; background:var(--surface); border:1px solid var(--line); text-decoration:none; color:var(--fg); }
+li a:hover, li a:focus-visible { border-color:var(--accent); outline:none; }
+li a span { font-size:14px; color:var(--muted); }
+a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <header style="display:grid;gap:10px">
+    <span class="eyebrow">Septembre – octobre 2026</span>
+    <h1>Recherches IA souveraine</h1>
+    <p>Notes techniques, architectures et templates Terraform pour héberger de l'IA générative en gardant la maîtrise des données : Mistral sur Scaleway, usine d'IA NVIDIA InfiniBand sur site, ordonnancement Slurm.</p>
+  </header>
+
+  <section>
+    <h2>Scaleway</h2>
+    <ul>
+      <li><a href="rapports/scaleway/mistral-souverain-sur-scaleway.html">Mistral souverain sur Scaleway<span>Architecture cible, plan de déploiement, coûts</span></a></li>
+      <li><a href="rapports/scaleway/ia-souveraine-scaleway.html">IA souveraine Scaleway<span>Constat GPU et modèles, idées de projets, modes d'inférence</span></a></li>
+      <li><a href="rapports/scaleway/catalogue-ia-souveraine.html">Catalogue IA souveraine<span>Produits RAG, agents et analyse sur un socle commun</span></a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>NVIDIA et InfiniBand</h2>
+    <ul>
+      <li><a href="rapports/nvidia-infiniband/usine-ia-souveraine-nvidia.html">Usine d'IA souveraine NVIDIA<span>Quantum-X800, SHARP, CUDA-Q, NVQLink</span></a></li>
+      <li><a href="rapports/nvidia-infiniband/integration-infiniband-souveraine.html">Intégration InfiniBand souveraine<span>Architecture de référence, recette, certifications</span></a></li>
+      <li><a href="rapports/nvidia-infiniband/upper-layer-protocols-infiniband.html">Upper Layer Protocols InfiniBand<span>Fiche de révision NCP-AIN</span></a></li>
+      <li><a href="rapports/nvidia-infiniband/subnet-manager-infiniband.html">Le Subnet Manager InfiniBand<span>Fonctionnement, configuration, exploitation</span></a></li>
+      <li><a href="rapports/nvidia-infiniband/materiel-subnet-manager.html">Le matériel du Subnet Manager<span>Commutateurs, UFM, ConnectX, BlueField</span></a></li>
+      <li><a href="rapports/nvidia-infiniband/lab-infiniband-local.html">Lab InfiniBand local<span>Du simulateur ibsim à la fabric commutée</span></a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Slurm</h2>
+    <ul>
+      <li><a href="rapports/slurm/slurm-clusters-gpu-souverains.html">Slurm pour clusters GPU souverains<span>Architecture, lien InfiniBand, POC exécuté</span></a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Code</h2>
+    <p><a href="scaleway/README.md">scaleway/</a> : quatre produits Terraform (gateway, rag, agents, analytics) déployables depuis GitHub Actions.</p>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Non-secret settings. Secrets come from GitHub secrets (SCW_*, TF_VAR_hf_token).
+region = "fr-par"
+zone   = "fr-par-2"
+
+platform = {
+  name_prefix           = "rag"
+  inference_mode        = "generative_api" # managed_inference + serverless_fallback = false for sensitive corpora
+  serverless_fallback   = true
+  gateway_domain        = ""
+  acme_email            = ""
+  allowed_api_cidrs     = ["0.0.0.0/0"]
+  bastion_allowed_cidrs = []
+  ssh_public_keys       = []
+}
+
+app_instance_type    = "PLAY2-MICRO"
+db_node_type         = "DB-DEV-M"
+db_high_availability = false

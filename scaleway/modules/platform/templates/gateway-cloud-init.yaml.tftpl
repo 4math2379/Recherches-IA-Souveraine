@@ -1,0 +1,100 @@
+#cloud-config
+package_update: true
+packages:
+  - docker.io
+  - docker-compose-v2
+
+write_files:
+  - path: /opt/sovereign-ai/.env
+    permissions: "0600"
+    content: |
+      LITELLM_MASTER_KEY=${litellm_master_key}
+      SCW_GENAI_KEY=${scw_genai_key}
+      VLLM_API_KEY=${vllm_api_key}
+      NO_AUTH_KEY=unused
+
+  - path: /opt/sovereign-ai/litellm.yaml
+    permissions: "0644"
+    content: |
+      model_list:
+        # Stable alias used by every application.
+        - model_name: mistral-chat
+          litellm_params:
+            model: openai/${chat.model}
+            api_base: ${chat.api_base}
+            api_key: os.environ/${chat.key_env}
+%{ if dedicated_backend ~}
+        - model_name: mistral-chat-serverless
+          litellm_params:
+            model: openai/${genai_chat_model}
+            api_base: ${genai_base_url}
+            api_key: os.environ/SCW_GENAI_KEY
+%{ endif ~}
+        - model_name: embeddings
+          litellm_params:
+            model: openai/${genai_embed_model}
+            api_base: ${genai_base_url}
+            api_key: os.environ/SCW_GENAI_KEY
+%{ for alias, model in extra_models ~}
+        - model_name: ${alias}
+          litellm_params:
+            model: openai/${model}
+            api_base: ${genai_base_url}
+            api_key: os.environ/SCW_GENAI_KEY
+%{ endfor ~}
+      litellm_settings:
+        drop_params: true
+        request_timeout: 300
+%{ if dedicated_backend && serverless_fallback ~}
+      router_settings:
+        fallbacks:
+          - mistral-chat: ["mistral-chat-serverless"]
+%{ endif ~}
+      general_settings:
+        master_key: os.environ/LITELLM_MASTER_KEY
+
+  - path: /opt/sovereign-ai/Caddyfile
+    permissions: "0644"
+    content: |
+%{ if acme_email != "" ~}
+      {
+        email ${acme_email}
+      }
+%{ endif ~}
+%{ for sub, upstream in sites ~}
+      ${sub == "" ? domain : "${sub}.${domain}"} {
+        @denied not remote_ip ${allowed_cidrs}
+        respond @denied 403
+        reverse_proxy ${upstream}
+      }
+%{ endfor ~}
+
+  - path: /opt/sovereign-ai/compose.yaml
+    permissions: "0644"
+    content: |
+      services:
+        litellm:
+          image: ${litellm_image}
+          command: ["--config", "/app/config.yaml", "--port", "4000"]
+          env_file: .env
+          volumes:
+            - ./litellm.yaml:/app/config.yaml:ro
+          # Reachable by product apps on the private network (no public IP on this Instance).
+          ports:
+            - "4000:4000"
+          restart: unless-stopped
+        caddy:
+          image: ${caddy_image}
+          ports:
+            - "80:80"
+            - "443:443"
+          volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy_data:/data
+          restart: unless-stopped
+      volumes:
+        caddy_data: {}
+
+runcmd:
+  - systemctl enable --now docker
+  - cd /opt/sovereign-ai && docker compose up -d

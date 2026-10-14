@@ -1,0 +1,367 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>IA souveraine Scaleway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: colonne de lecture ~72ch ; schéma et tableaux en pleine largeur dans leur propre conteneur défilant. */
+:root {
+  --bg: #F4F5F8; --surface: #FFFFFF; --fg: #17151F; --muted: #5C5970; --line: #D6D4E0;
+  --accent: #4B2FB8; --tint-neutral: #ECEBF3;
+  --serverless: #0E7A60; --tint-serverless: #E2F3EC;
+  --gpu: #9A5F0C; --tint-gpu: #F6ECDC;
+  --data: #5B4FB8; --warn: #A3342B; --tint-warn: #F8E6E3;
+  --font-display: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111018; --surface: #1A1924; --fg: #ECEAF4; --muted: #A19EB5; --line: #33313F;
+    --accent: #A897FF; --tint-neutral: #22202E;
+    --serverless: #4FCCA6; --tint-serverless: #12302A; --gpu: #E3A853; --tint-gpu: #33270F;
+    --data: #A99CFF; --warn: #F08A7E; --tint-warn: #3A1D1A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111018; --surface: #1A1924; --fg: #ECEAF4; --muted: #A19EB5; --line: #33313F;
+  --accent: #A897FF; --tint-neutral: #22202E;
+  --serverless: #4FCCA6; --tint-serverless: #12302A; --gpu: #E3A853; --tint-gpu: #33270F;
+  --data: #A99CFF; --warn: #F08A7E; --tint-warn: #3A1D1A; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 80px; display: grid; gap: 60px; }
+.read { max-width: 72ch; min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 4.6vw, 3rem); font-weight: 700; letter-spacing: -0.015em; }
+h2 { font-size: 1.55rem; font-weight: 700; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p { margin: 0; }
+section { display: grid; gap: 18px; min-width: 0; }
+header { display: grid; gap: 14px; }
+.eyebrow, .m { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+.small { font-size: 0.9rem; color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--tint-neutral); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+.diagram > svg { display: block; min-width: 900px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 0.88rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 0.94rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--tint-neutral); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 500; white-space: nowrap; }
+.pill.s { background: var(--tint-serverless); color: var(--serverless); }
+.pill.g { background: var(--tint-gpu); color: var(--gpu); }
+.pill.w { background: var(--tint-warn); color: var(--warn); }
+.pill.n { background: var(--tint-neutral); color: var(--muted); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.fact .pill { justify-self: start; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.fact p { font-size: 0.93rem; color: var(--muted); }
+.ideas { display: grid; gap: 14px; }
+.idea { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px 22px; display: grid; gap: 10px; min-width: 0; }
+.idea.lead { border: 2px solid var(--accent); }
+.idea .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+.idea .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.idea p { color: var(--muted); font-size: 0.96rem; }
+.idea dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 0.92rem; }
+.idea dt { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.idea dd { margin: 0; min-width: 0; }
+.steps { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.step { position: relative; padding: 0 0 26px 28px; display: grid; gap: 6px; min-width: 0; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ""; position: absolute; left: -8px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.step p, .step li { color: var(--muted); font-size: 0.95rem; }
+.step ul { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; }
+pre { margin: 0; background: var(--tint-neutral); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.5; color: var(--fg); }
+.files { font-family: var(--font-mono); font-size: 0.84rem; }
+.sources { font-size: 0.88rem; color: var(--muted); display: grid; gap: 4px; padding-left: 1.1em; margin: 0; }
+@media (max-width: 520px) { .idea dl { grid-template-columns: 1fr; } .idea dt { padding-top: 6px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<div class="wrap">
+  <header class="read">
+    <span class="eyebrow">Région fr-par · relevé du 7 octobre 2026</span>
+    <h1>IA souveraine sur Scaleway</h1>
+    <p class="lede">Une API compatible OpenAI, servie par des modèles Mistral et hébergée chez Scaleway à Paris. Elle se déploie depuis GitHub avec Terraform. Une seule variable choisit où tourne le modèle : serverless, GPU Instance ou Managed Inference. Les applications ne changent pas.</p>
+    <p class="small">Le code est écrit et validé hors ligne. Rien n'a été déployé.</p>
+  </header>
+
+  <section>
+    <div class="read"><h2>Constat au 7 octobre 2026</h2></div>
+    <div class="facts">
+      <div class="fact">
+        <span class="pill w">Pénurie GPU</span>
+        <h3>Tous les GPU sont en pénurie</h3>
+        <p>Les instances L4, L40S, H100 et B300 sont en pénurie à fr-par-1, fr-par-2 et pl-waw-2. Seule l'ancienne RENDER-S est disponible. En Managed Inference, H100 est en rupture et L4 et L40S en stock inconnu.</p>
+      </div>
+      <div class="fact">
+        <span class="pill s">Disponible</span>
+        <h3>Mistral en serverless</h3>
+        <p>Mistral Small 3.2, Medium 3.5, Pixtral 12B, Voxtral Small et Devstral 2 sont disponibles. Mistral Nemo est en fin de vie : à éviter.</p>
+      </div>
+      <div class="fact">
+        <span class="pill w">Hors UE</span>
+        <h3>RPG Map Gen dépend des États-Unis</h3>
+        <p>Elle utilise les embeddings OpenAI, Amazon Nova Canvas via Bedrock pour les images, S3 à Francfort et MongoDB Atlas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="read">
+      <h2>Architecture</h2>
+      <p class="small">Icônes officielles Scaleway (paquet <code>@ultraviolet/icons</code>, Apache 2.0). Les cadres en pointillés sont les backends GPU optionnels.</p>
+    </div>
+    <div class="diagram" role="img" aria-label="Les applications appellent en HTTPS la Public Gateway, seule IP publique, qui redirige vers la passerelle IA LiteLLM dans le réseau privé. La passerelle route vers Generative APIs par défaut, ou vers une GPU Instance vLLM ou un endpoint Managed Inference. À droite : IAM, Secret Manager, Object Storage, Container Registry, Cockpit, Audit Trail. En bas : GitHub Actions et Terraform.">
+<svg viewBox="0 0 1180 790" xmlns="http://www.w3.org/2000/svg" role="img" font-family="var(--font-body)">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+</defs>
+<style>
+.t{font-family:var(--font-body);font-size:14px;font-weight:600;fill:var(--fg)}
+.s{font-family:var(--font-body);font-size:12px;fill:var(--muted)}
+.m{font-family:var(--font-mono);font-size:10.5px;fill:var(--muted);letter-spacing:.04em}
+.f{fill:none;stroke:var(--accent);stroke-width:1.8}
+.o{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-dasharray:5 4}
+</style>
+<rect x="196" y="16" width="968" height="640" rx="14" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 5"/>
+<text x="212" y="40" class="m">RÉGION FR-PAR (PARIS) · ZONE FR-PAR-2</text>
+<rect x="420" y="170" width="430" height="466" rx="12" fill="var(--tint-neutral)" fill-opacity=".6" stroke="var(--line)" stroke-width="1.5"/>
+<svg x="432" y="180" width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#a060f6" d="M33 12.873a4 4 0 0 1-2 0V25.07a7 7 0 0 1 2 0zm4.426 14.704c.421.515.77 1.092 1.03 1.714l10.737-6.442a4 4 0 0 1-1.03-1.714l-10.736 6.442Zm1.128 6.885a7 7 0 0 1-.965 1.752l10.535 5.794a4 4 0 0 1 .965-1.752zM33 38.928a7 7 0 0 1-2 0v12.197a4 4 0 0 1 2 0zm-6.589-2.713c-.4-.53-.727-1.12-.965-1.752l-10.534 5.794c.457.485.795 1.085.964 1.752zm-.868-6.924a7 7 0 0 1 1.03-1.714l-10.737-6.442a4 4 0 0 1-1.03 1.714z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#521094" d="M32 5a4 4 0 0 1 3.855 5.07l12.975 7.49a4 4 0 0 1 2.97-1.555L52 16a4 4 0 0 1 .919 7.894v15.212a4.002 4.002 0 0 1-.72 7.889L52 47c-.97 0-1.86-.346-2.552-.92l-13.593 7.848a4.005 4.005 0 0 1-3.655 5.067L32 59a4 4 0 0 1-3.855-5.072L14.552 46.08a4 4 0 0 1-2.352.915L12 47a4 4 0 0 1-.919-7.894V23.894a4.002 4.002 0 0 1 .72-7.889L12 16c1.29 0 2.439.611 3.17 1.56l12.975-7.49A4.003 4.003 0 0 1 31.8 5.005zm.2 7.995a4 4 0 0 0 2.655-1.193l13.187 7.614a4 4 0 0 0 2.876 4.436v15.296a4 4 0 0 0-2.647 5.302l-13.418 7.747A4 4 0 0 0 32 51l-.2.005a4 4 0 0 0-2.653 1.192L15.729 44.45a4 4 0 0 0-2.648-5.303V23.853a4 4 0 0 0 2.877-4.437l13.187-7.613A4 4 0 0 0 32 13zM30 55a2 2 0 1 1 4 0 2 2 0 0 1-4 0m22-14a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-42 2a2 2 0 1 1 4 0 2 2 0 0 1-4 0m2-25a2 2 0 1 0 0 4 2 2 0 0 0 0-4m38 2a2 2 0 1 1 4 0 2 2 0 0 1-4 0M30 9a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 23a5 5 0 1 1-10 0 5 5 0 0 1 10 0m2 0a7 7 0 1 1-14 0 7 7 0 0 1 14 0" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg>
+<text x="466" y="198" class="m">VPC · PRIVATE NETWORK 172.16.32.0/22</text>
+<text x="436" y="622" class="m">AUCUNE IP PUBLIQUE SUR LES INSTANCES</text>
+<rect x="16" y="300" width="162" height="150" rx="10" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.4"/><text x="30" y="328" class="t">Applications</text><text x="30" y="345" class="m">SDK OPENAI</text><text x="30" y="370" class="s">RPG Map Gen (FastAPI)</text><text x="30" y="388" class="s">Agents, IDE, chatbots</text><text x="30" y="406" class="s">Scripts, back-office</text>
+<text x="16" y="486" class="m">ADMIN SSH</text><text x="16" y="502" class="s">via bastion :61000</text>
+<rect x="214" y="300" width="184" height="150" rx="10" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.4"/><svg x="226" y="312" width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#a060f6" d="M31 26V12.135h2V26zm17.63-5.215-10.904 6.627 1.039 1.71 10.904-6.628-1.04-1.71ZM37.689 36.287l.954-1.758 11.166 6.058-.953 1.758zM31 51.88V38h2v13.881z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#521094" d="M32 5a4 4 0 0 0-.2 7.995L32 13a4 4 0 0 0 2.854-1.197l13.188 7.614a4 4 0 0 0 2.877 4.435v15.296a4 4 0 0 0-2.648 5.303l-13.417 7.746a4 4 0 0 0-2.654-1.192L32 51a4 4 0 0 0-.2 7.995L32 59a4 4 0 0 0 3.855-5.07l13.594-7.85c.644.535 1.46.871 2.351.915L52 47a4 4 0 0 0 .919-7.894V23.894a4.002 4.002 0 0 0-.72-7.89L52 16c-1.291 0-2.44.612-3.171 1.561l-12.974-7.49A4.004 4.004 0 0 0 32.2 5.005zm2 50a2 2 0 1 0-4 0 2 2 0 0 0 4 0m20-12a2 2 0 1 0-4 0 2 2 0 0 0 4 0m0-23a2 2 0 1 0-4 0 2 2 0 0 0 4 0M34 9a2 2 0 1 0-4 0 2 2 0 0 0 4 0m-9 17a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H26a1 1 0 0 1-1-1v-5H11.692l4.32 3.886.082.083a1 1 0 0 1-1.42 1.404l-6.059-5.45a1 1 0 0 1-.142-1.773l6.201-5.578.091-.073a1 1 0 0 1 1.321.148l.073.091a1 1 0 0 1-.147 1.321L11.632 31H25zm2 1v10h10V27z" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg><text x="272" y="328" class="t">Public Gateway</text><text x="272" y="345" class="m">SEULE IP PUBLIQUE</text><text x="228" y="370" class="s">PAT 443 et 80 → passerelle</text><text x="228" y="388" class="s">NAT sortant</text><text x="228" y="406" class="s">Bastion SSH :61000</text>
+<rect x="440" y="300" width="184" height="150" rx="10" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><svg x="452" y="312" width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" d="M25.493 12.883A1 1 0 0 0 23.5 13v5H23a5 5 0 0 0-5 5v.5h-5l-.117.007A1 1 0 0 0 13 25.5h5v3h-5l-.117.007A1 1 0 0 0 13 30.5h5v3h-5l-.117.007A1 1 0 0 0 13 35.5h5v3h-5l-.117.007A1 1 0 0 0 13 40.5h5v.5a5 5 0 0 0 5 5h.5v4.828l.007.117a1 1 0 0 0 1.993-.117V46h3v4.828l.007.117a1 1 0 0 0 1.993-.117V46h3v4.828l.007.117a1 1 0 0 0 1.993-.117V46h3v4.828l.007.117a1 1 0 0 0 1.993-.117V46h.5a5 5 0 0 0 5-5v-.5h4.828l.117-.007a1 1 0 0 0-.117-1.993H46v-3h4.828l.117-.007a1 1 0 0 0-.117-1.993H46v-3h4.828l.117-.007a1 1 0 0 0-.117-1.993H46v-3h4.828l.117-.007a1 1 0 0 0-.117-1.993H46V23a5 5 0 0 0-5-5h-.5v-5l-.007-.117A1 1 0 0 0 38.5 13v5h-3v-5l-.007-.117A1 1 0 0 0 33.5 13v5h-3v-5l-.007-.117A1 1 0 0 0 28.5 13v5h-3v-5zM44 24.5V23a3 3 0 0 0-2.824-2.995L41 20H23a3 3 0 0 0-2.995 2.824L20 23v18a3 3 0 0 0 2.824 2.995L23 44h18a3 3 0 0 0 2.995-2.824L44 41z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M40 26a2 2 0 0 0-2-2H26a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-14 0h12v12H26z" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg><text x="498" y="328" class="t">Passerelle IA</text><text x="498" y="345" class="m">PLAY2-NANO</text><text x="454" y="370" class="s">LiteLLM + Caddy (TLS)</text><text x="454" y="388" class="s">alias mistral-chat</text><text x="454" y="406" class="s">clés, fallback, logs</text>
+<rect x="650" y="218" width="200" height="132" rx="10" fill="var(--tint-gpu)" stroke="var(--gpu)" stroke-width="1.4" stroke-dasharray="6 4"/><svg x="662" y="230" width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" d="M25.493 12.883A1 1 0 0 0 23.5 13v5H23a5 5 0 0 0-5 5v.5h-5l-.117.007A1 1 0 0 0 13 25.5h5v3h-5l-.117.007A1 1 0 0 0 13 30.5h5v3h-5l-.117.007A1 1 0 0 0 13 35.5h5v3h-5l-.117.007A1 1 0 0 0 13 40.5h5v.5a5 5 0 0 0 5 5h.5v4.828l.007.117a1 1 0 0 0 1.993-.117V46h3v4.828l.007.117a1 1 0 0 0 1.993-.117V46h3v4.828l.007.117a1 1 0 0 0 1.993-.117V46h3v4.828l.007.117a1 1 0 0 0 1.993-.117V46h.5a5 5 0 0 0 5-5v-.5h4.828l.117-.007a1 1 0 0 0-.117-1.993H46v-3h4.828l.117-.007a1 1 0 0 0-.117-1.993H46v-3h4.828l.117-.007a1 1 0 0 0-.117-1.993H46v-3h4.828l.117-.007a1 1 0 0 0-.117-1.993H46V23a5 5 0 0 0-5-5h-.5v-5l-.007-.117A1 1 0 0 0 38.5 13v5h-3v-5l-.007-.117A1 1 0 0 0 33.5 13v5h-3v-5l-.007-.117A1 1 0 0 0 28.5 13v5h-3v-5zM44 24.5V23a3 3 0 0 0-2.824-2.995L41 20H23a3 3 0 0 0-2.995 2.824L20 23v18a3 3 0 0 0 2.824 2.995L23 44h18a3 3 0 0 0 2.995-2.824L44 41z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M31.074 30.451c-1.62-.861-2.306-2.836-1.518-4.494.166-.349.312-.648.413-.838.1-.187.263-.47.456-.798.938-1.587 2.967-2.125 4.595-1.26.637.34.817 1.17.378 1.742l-1.562 2.035a1.8 1.8 0 0 0-.28.526l-.809 2.42a1.18 1.18 0 0 1-1.673.667m-4.997 4.114c1.658.787 3.633.1 4.494-1.52a1.18 1.18 0 0 0-.668-1.672l-2.419-.809a1.8 1.8 0 0 1-.526-.28l-2.034-1.562a1.168 1.168 0 0 0-1.742.378c-.866 1.628-.328 3.657 1.259 4.595.327.194.611.357.799.456.19.101.488.248.838.413Zm8.608 3.478c.787-1.658.101-3.633-1.519-4.494a1.18 1.18 0 0 0-1.673.668l-.809 2.419q-.096.286-.28.526l-1.561 2.035c-.44.572-.26 1.403.378 1.742 1.627.865 3.657.327 4.594-1.26.194-.327.357-.611.457-.798.1-.19.247-.49.413-.838m3.478-8.607c-1.658-.788-3.632-.102-4.494 1.518a1.18 1.18 0 0 0 .668 1.673l2.419.809q.286.096.526.28l2.035 1.562c.572.44 1.403.26 1.742-.378.865-1.628.327-3.657-1.26-4.595a23 23 0 0 0-.798-.456c-.19-.101-.489-.247-.838-.413" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg><text x="708" y="246" class="t">GPU Instance</text><text x="708" y="263" class="m">L40S-1-48G</text><text x="664" y="288" class="s">vLLM · Mistral Small 3.2</text><text x="664" y="306" class="s">FP8, 32k de contexte</text>
+<rect x="650" y="372" width="200" height="132" rx="10" fill="var(--tint-gpu)" stroke="var(--gpu)" stroke-width="1.4" stroke-dasharray="6 4"/><svg x="662" y="384" width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path><path fill="#a060f6" fill-rule="evenodd" d="M13 18.32A5.32 5.32 0 0 1 18.32 13h27.36A5.32 5.32 0 0 1 51 18.32V24a1 1 0 1 1-2 0v-5.68A3.32 3.32 0 0 0 45.68 15H18.32A3.32 3.32 0 0 0 15 18.32V24a1 1 0 1 1-2 0zM14 39a1 1 0 0 1 1 1v5.68A3.32 3.32 0 0 0 18.32 49h27.36A3.32 3.32 0 0 0 49 45.68V40a1 1 0 1 1 2 0v5.68A5.32 5.32 0 0 1 45.68 51H18.32A5.32 5.32 0 0 1 13 45.68V40a1 1 0 0 1 1-1" clip-rule="evenodd"></path><path fill="#521094" fill-rule="evenodd" d="M41 32a1 1 0 0 1 1-1h7a1 1 0 1 1 0 2h-7a1 1 0 0 1-1-1m-25 0a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1" clip-rule="evenodd"></path><path fill="#521094" fill-rule="evenodd" d="M27.163 22.388c-1.16.61-1.752 1.75-1.552 2.746a1 1 0 0 1-.706 1.157c-.69.197-1.096.498-1.345.807-.252.313-.396.703-.447 1.158-.104.947.217 2.035.575 2.75a1 1 0 0 1-.188 1.154c-1.643 1.643-1.702 3.028-1.267 3.898.47.94 1.732 1.743 3.622 1.743a1 1 0 0 1 1 1c0 1.09.227 1.779.508 2.211.273.42.645.674 1.093.817.756.242 1.704.156 2.522-.07V22.76c-1.407-.985-2.805-.905-3.815-.373m-.932-1.77c1.812-.954 4.239-.908 6.387.882a1 1 0 0 1 .36.768v20.208a1 1 0 0 1-.628.928c-1.122.449-2.913.84-4.504.33a3.96 3.96 0 0 1-2.16-1.632c-.415-.638-.678-1.423-.781-2.356-1.992-.237-3.675-1.223-4.46-2.794-.866-1.73-.471-3.8 1.169-5.698-.346-.893-.616-2.062-.489-3.217.083-.749.337-1.523.878-2.194a4.2 4.2 0 0 1 1.568-1.189c.03-1.72 1.16-3.247 2.66-4.036" clip-rule="evenodd"></path><path fill="#521094" fill-rule="evenodd" d="M36.84 22.388c1.16.61 1.75 1.75 1.551 2.746a1 1 0 0 0 .706 1.157c.69.197 1.096.498 1.345.807.252.313.396.703.447 1.158.104.947-.217 2.035-.575 2.75a1 1 0 0 0 .188 1.154c1.643 1.643 1.702 3.028 1.267 3.898-.47.94-1.732 1.743-3.622 1.743a1 1 0 0 0-1 1c0 1.09-.227 1.779-.508 2.211-.273.42-.645.674-1.093.817-.756.242-1.704.156-2.522-.07V22.76c1.407-.985 2.805-.905 3.816-.373m.93-1.77c-1.811-.954-4.238-.908-6.386.882a1 1 0 0 0-.36.768v20.208a1 1 0 0 0 .628.928c1.122.449 2.913.84 4.504.33a3.96 3.96 0 0 0 2.16-1.632q.624-.957.781-2.356c1.992-.237 3.675-1.223 4.46-2.794.866-1.73.471-3.8-1.169-5.698.346-.893.616-2.062.489-3.217-.083-.749-.337-1.523-.878-2.194a4.2 4.2 0 0 0-1.568-1.189c-.03-1.72-1.16-3.247-2.66-4.036M18 32a1 1 0 0 1-.5.866l-7.5 4.33a1 1 0 0 1-1.5-.866v-8.66a1 1 0 0 1 1.5-.866l7.5 4.33A1 1 0 0 1 18 32m-3 0-4.5-2.598v5.196zm38-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6m-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0" clip-rule="evenodd"></path><path fill="#a060f6" fill-rule="evenodd" d="M15 55a1 1 0 0 1 1-1h10.8a1 1 0 1 1 0 2H16a1 1 0 0 1-1-1M34 9a1 1 0 0 1 1-1h10.8a1 1 0 1 1 0 2H35a1 1 0 0 1-1-1" clip-rule="evenodd"></path></svg><text x="708" y="400" class="t">Managed Inference</text><text x="708" y="417" class="m">NŒUD L40S</text><text x="664" y="442" class="s">Mistral Small 3.2 FP8</text><text x="664" y="460" class="s">endpoint privé</text>
+<text x="652" y="530" class="m">OPTIONS GPU (inference_mode)</text>
+<rect x="650" y="52" width="200" height="104" rx="10" fill="var(--tint-serverless)" stroke="var(--serverless)" stroke-width="1.4"/><svg x="662" y="64" width="36" height="36" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" fill-rule="evenodd" d="M21.38 23.243c-.1-4.357 5.395-7.872 10.12-4.482 4.725-3.39 10.22.125 10.12 4.482.84.369 1.497.883 1.984 1.51.626.807.921 1.737 1.017 2.644.152 1.429-.178 2.889-.598 4H47.6a5.002 5.002 0 0 1 9.9 1 5 5 0 0 1-9.9 1h-2.349c.926 1.814.986 3.63.235 5.19-.937 1.945-3 3.189-5.482 3.443-.105 1.249-.424 2.274-.936 3.09a4.65 4.65 0 0 1-2.528 1.98c-1.734.576-3.683.22-5.04-.277-1.357.497-3.306.853-5.04.277a4.65 4.65 0 0 1-2.528-1.98c-.512-.816-.83-1.841-.936-3.09-2.482-.254-4.545-1.498-5.482-3.443-.75-1.56-.69-3.376.235-5.19h-1.981L8.5 37.593a1 1 0 0 1-1.5-.866v-8.66a1 1 0 0 1 1.5-.867l7.268 4.197h3.209c-.42-1.111-.75-2.571-.598-4 .096-.907.391-1.837 1.017-2.643.487-.628 1.145-1.142 1.984-1.511m2.056.481c-.54-2.802 3.316-6.128 7.091-3.194v1.866a1 1 0 1 0 2 0v-1.908c3.758-2.86 7.574.448 7.037 3.236a1 1 0 0 0 .697 1.148c.878.26 1.42.666 1.763 1.108.348.448.542 1.001.608 1.628.137 1.287-.28 2.734-.733 3.674a1 1 0 0 0 .18 1.128c2.064 2.141 2.215 4.044 1.605 5.31-.635 1.319-2.284 2.36-4.641 2.36a1 1 0 0 0-1 1c0 1.432-.288 2.37-.67 2.98a2.65 2.65 0 0 1-1.464 1.142c-1.048.348-2.361.188-3.437-.159v-2.147a1 1 0 1 0-2 0v2.165c-1.064.334-2.35.483-3.381.14a2.65 2.65 0 0 1-1.464-1.141c-.382-.61-.67-1.548-.67-2.98a1 1 0 0 0-1-1c-2.357 0-4.006-1.041-4.641-2.36-.61-1.266-.459-3.169 1.604-5.31a1 1 0 0 0 .18-1.128c-.452-.94-.87-2.387-.733-3.674.067-.627.26-1.18.609-1.628.343-.442.885-.847 1.763-1.108a1 1 0 0 0 .697-1.148M9 29.8l4.5 2.598L9 34.995v-5.196Zm40.5 2.598v.012a3 3 0 1 0 0-.025z" clip-rule="evenodd"></path><g fill="#a060f6"><path fill-rule="evenodd" d="M19.5 17.897a1 1 0 0 1-.5.866l-6.75 3.897a1 1 0 0 1-1.5-.866V14a1 1 0 0 1 1.5-.866L19 17.031a1 1 0 0 1 .5.866m-6.75-2.165v4.33l3.75-2.165z" clip-rule="evenodd"></path><path d="M33.45 25.94a1 1 0 0 1 .671 1.245l-3.3 11a1 1 0 1 1-1.916-.575l3.3-11a1 1 0 0 1 1.246-.67Zm.795 3.413a1 1 0 0 1 1.391-.253l3.575 2.475a1 1 0 0 1 0 1.644l-3.575 2.475a1 1 0 0 1-1.138-1.644l2.387-1.653-2.387-1.653a1 1 0 0 1-.253-1.391m-6.939-.253a1 1 0 1 1 1.138 1.644l-2.387 1.653 2.387 1.653a1 1 0 1 1-1.138 1.644L23.73 33.22a1 1 0 0 1 0-1.644l3.575-2.475Z"></path><path fill-rule="evenodd" d="M19 47.763a1 1 0 0 0 0-1.732l-6.75-3.897a1 1 0 0 0-1.5.866v7.794a1 1 0 0 0 1.5.866zm-6.25 1.3v-4.331l3.75 2.165-3.75 2.165ZM45 17.897a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0m4.5-2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5m0 27a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9m-2.5 4.5a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0" clip-rule="evenodd"></path></g></g></svg><text x="708" y="80" class="t">Generative APIs</text><text x="708" y="97" class="m">SERVERLESS · DÉFAUT</text><text x="664" y="122" class="s">Mistral Small 3.2</text><text x="664" y="140" class="s">embeddings qwen3</text>
+<rect x="876" y="52" width="272" height="584" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"/>
+<text x="892" y="78" class="m">SÉCURITÉ · EXPLOITATION</text>
+<svg x="892" y="98" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><g><path fill="#a060f6" d="M45 51a8 8 0 1 0 0-16 8 8 0 0 0 0 16m0 2c5.523 0 10-4.477 10-10s-4.477-10-10-10-10 4.477-10 10 4.477 10 10 10" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#521094" d="m32 8-20 8.595v12.893c0 11.925 8.533 23.077 20 25.785 2.91-.688 5.632-1.919 8.073-3.569a10 10 0 0 1-1.741-1.252A22.4 22.4 0 0 1 32 53.212c-3.765-.977-7.183-2.958-10.005-5.609A1 1 0 0 0 22 47.5v-5.166a6 6 0 0 1 6-6h8q.726.001 1.402.164c.496-.579 1.057-1.1 1.671-1.553A8 8 0 0 0 36 34.334h-8a8 8 0 0 0-8 8V45.5c-3.727-4.404-6-10.105-6-16.013V17.912l18-7.735 18 7.735v11.576a23.6 23.6 0 0 1-.457 4.601c.64.327 1.24.721 1.792 1.173A25.6 25.6 0 0 0 52 29.488V16.595zm-.147 10a6.333 6.333 0 1 0 0 12.667 6.333 6.333 0 0 0 0-12.667m-8.333 6.333a8.333 8.333 0 1 1 16.667 0 8.333 8.333 0 0 1-16.667 0" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M49.774 39.661a1 1 0 0 1 0 1.414L43.9 46.95l-3.291-3.291a1 1 0 0 1 1.414-1.414L43.9 44.12l4.46-4.46a1 1 0 0 1 1.414 0Z" clip-rule="evenodd" fill-rule="evenodd"></path></g></g></svg>
+<text x="944" y="115" class="t">IAM</text><text x="944" y="133" class="s">appli dédiée, droit GenAI seul</text>
+<svg x="892" y="174" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><g><path fill="#a060f6" d="m23.433 43.545.124-1.924-1.61 1.08-.667-1.174 1.735-.845-1.735-.845.666-1.174 1.611 1.08-.124-1.925h1.337l-.13 1.924 1.612-1.079.666 1.174-1.73.845 1.73.845-.666 1.173-1.611-1.079.13 1.924zm7.902 0 .124-1.924-1.61 1.08-.667-1.174 1.736-.845-1.736-.845.667-1.174 1.61 1.08-.124-1.925h1.337l-.129 1.924 1.611-1.079.666 1.174-1.73.845 1.73.845-.666 1.173-1.61-1.079.128 1.924zm7.902 0 .125-1.924-1.611 1.08-.666-1.174 1.735-.845-1.735-.845.666-1.174 1.61 1.08-.124-1.925h1.338l-.13 1.924 1.611-1.079.666 1.174-1.73.845 1.73.845-.666 1.173-1.61-1.079.129 1.924z"></path><path fill="#521094" d="M22 30a6 6 0 0 0-6 6v10a6 6 0 0 0 6 6h20a6 6 0 0 0 6-6V36a6 6 0 0 0-6-6zm-8 6a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v10a8 8 0 0 1-8 8H22a8 8 0 0 1-8-8z"></path><path fill="#521094" d="M32 17a4 4 0 0 0-4 4v8a1 1 0 1 1-2 0v-8a6 6 0 0 1 12 0v8a1 1 0 1 1-2 0v-8a4 4 0 0 0-4-4"></path><path fill="#521094" d="M32 13a8 8 0 0 0-8 8v8a1 1 0 1 1-2 0v-8c0-5.523 4.477-10 10-10s10 4.477 10 10v8a1 1 0 1 1-2 0v-8a8 8 0 0 0-8-8"></path></g></g></svg>
+<text x="944" y="191" class="t">Secret Manager</text><text x="944" y="209" class="s">clé maître de la passerelle</text>
+<svg x="892" y="250" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" d="m32 13-.815.006c-7.656.108-13.834 1.745-14.99 4.371a.97.97 0 0 0-.188.49L16 18v27.273l.006.167c.27 3.412 7.113 5.633 15.59 5.701l.404.002c8.842 0 16-2.324 16-5.87V18c0-.253-.073-.46-.192-.617C46.618 14.661 40.035 13 32 13m13.976 5.155c-.185-.527-1.444-1.31-3.644-1.938C39.633 15.446 35.945 15 32 15s-7.633.446-10.332 1.217c-2.182.623-3.438 1.398-3.64 1.926.193.505 1.354 1.238 3.37 1.846l.27.08c2.699.771 6.387 1.217 10.332 1.217 3.883 0 7.518-.432 10.208-1.182 2.265-.632 3.588-1.435 3.768-1.948ZM18 21.002c2.72 1.628 7.949 2.57 14 2.57l.815-.005C38.52 23.485 43.402 22.556 46 21v24.272c0 1.802-6.066 3.802-13.615 3.868l-.385.002c-7.613 0-13.852-1.977-13.998-3.822l-.003-.088z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="m27.939 31.309 2.309-4.198a2 2 0 0 1 3.504 0l2.31 4.198a2 2 0 0 1-1.753 2.964H29.69a2 2 0 0 1-1.752-2.964ZM32 28.075l-2.309 4.198h4.618zM26 36h2a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3m2 2h-2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1m9-2a4 4 0 1 1 0 8 4 4 0 0 1 0-8m0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg>
+<text x="944" y="267" class="t">Object Storage</text><text x="944" y="285" class="s">state Terraform versionné</text>
+<svg x="892" y="326" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" d="M49 33.947a2 2 0 0 1 2 2V49a2 2 0 0 1-2 2H35.947a2 2 0 0 1-2-2V35.947a2 2 0 0 1 2-2zm0 2H35.947V49H49zm-9.323 2.62a1 1 0 0 0-1.993.117v7.58l.007.116a1 1 0 0 0 1.993-.117v-7.579zm2.797-.883a1 1 0 0 1 .993.884l.007.116v7.58a1 1 0 0 1-1.994.116l-.006-.117v-7.579a1 1 0 0 1 1-1m4.782.884a1 1 0 0 0-1.993.116v7.579l.007.117a1 1 0 0 0 1.993-.117v-7.579zm-19.203-4.621a2 2 0 0 1 2 2V49a2 2 0 0 1-2 2H15a2 2 0 0 1-2-2V35.947a2 2 0 0 1 2-2zm0 2H15V49h13.053zm-9.323 2.62a1 1 0 0 0-1.993.117v7.58l.007.116a1 1 0 0 0 1.993-.117v-7.579zm2.796-.883a1 1 0 0 1 .994.884l.006.116v7.58a1 1 0 0 1-1.993.116l-.007-.117v-7.579a1 1 0 0 1 1-1m4.783.884a1 1 0 0 0-1.993.116v7.579l.006.117a1 1 0 0 0 1.994-.117v-7.579z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M49.053 13a2 2 0 0 1 2 2v13.053a2 2 0 0 1-2 2H36a2 2 0 0 1-2-2V15a2 2 0 0 1 2-2zm0 2H36v13.053h13.053zm-9.323 2.62a1 1 0 0 0-1.993.117v7.579l.007.116a1 1 0 0 0 1.993-.116v-7.58zm2.796-.883a1 1 0 0 1 .994.883l.006.117v7.579a1 1 0 0 1-1.993.116l-.007-.116v-7.58a1 1 0 0 1 1-1Zm4.783.883a1 1 0 0 0-1.993.117v7.579l.006.116a1 1 0 0 0 1.994-.116v-7.58z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#521094" d="M28.053 13a2 2 0 0 1 2 2v13.053a2 2 0 0 1-2 2H15a2 2 0 0 1-2-2V15a2 2 0 0 1 2-2zm0 2H15v13.053h13.053zm-9.323 2.62a1 1 0 0 0-1.993.117v7.579l.007.116a1 1 0 0 0 1.993-.116v-7.58zm2.796-.883a1 1 0 0 1 .994.883l.006.117v7.579a1 1 0 0 1-1.993.116l-.007-.116v-7.58a1 1 0 0 1 1-1Zm4.783.883a1 1 0 0 0-1.993.117v7.579l.006.116a1 1 0 0 0 1.994-.116v-7.58z" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg>
+<text x="944" y="343" class="t">Container Registry</text><text x="944" y="361" class="s">miroir des images</text>
+<svg x="892" y="402" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g clip-path="url(#b)"><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" d="M40.45 18.2a1 1 0 0 1 1-1h5.773a1 1 0 1 1 0 2H41.45a1 1 0 0 1-1-1" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#521094" d="M10 18.87A5.87 5.87 0 0 1 15.87 13h32.26A5.87 5.87 0 0 1 54 18.87v20.423a27 27 0 0 0-2-1.482V23.4H12v17.73A3.87 3.87 0 0 0 15.87 45h10.776a3.5 3.5 0 0 0 .904 1.498l.353.347.024.024.138.131H15.87A5.87 5.87 0 0 1 10 41.13zm2 2.53h40v-2.53A3.87 3.87 0 0 0 48.13 15H15.87A3.87 3.87 0 0 0 12 18.87z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M31.443 44c3.683-3.42 7.193-4.998 10.55-5l.366.006c3.248.108 6.643 1.691 10.199 4.994-3.683 3.421-7.193 4.998-10.55 5l-.366-.006C38.394 48.886 35 47.303 31.443 44m-1.783-1.067C33.71 39.038 37.825 37 42 37h.017l.383.006h.016c4.035.132 8.01 2.162 11.925 5.927l.007.007.352.345a1 1 0 0 1 .001 1.427l-.36.355C50.29 48.962 46.176 51 42 51h-.017l-.383-.006h-.016c-4.035-.132-8.01-2.162-11.925-5.927l-.007-.007-.353-.347a1 1 0 0 1 .001-1.429z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M42 39a5 5 0 1 0 0 10 5 5 0 0 0 0-10m-7 5a7 7 0 1 1 14 0 7 7 0 0 1-14 0" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#a060f6" d="M44 43.95a2 2 0 1 0-4 0 2 2 0 0 0 4 0"></path><path fill="#521094" d="M36.8 28a.733.733 0 1 0 0 1.467.733.733 0 0 0 0-1.467m-2.734.733A2.733 2.733 0 0 1 39.24 27.5h3.787a2.733 2.733 0 1 1-.185 2h-3.418a2.735 2.735 0 0 1-3.557 1.803l-4.427 4.87a1 1 0 0 1-1.244.19l-5.322-3.104a2.73 2.73 0 0 1-2.715.696l-2.126 2.834a2.733 2.733 0 1 1-1.622-1.171l2.17-2.892a2.733 2.733 0 1 1 5.085-1.32l4.839 2.822 3.862-4.248a2.7 2.7 0 0 1-.3-1.247ZM22.933 30.6a.733.733 0 1 0 0 1.467.733.733 0 0 0 0-1.467m21.8-1.867a.733.733 0 1 1 1.467 0 .733.733 0 0 1-1.467 0m-27 8.8a.733.733 0 1 0 0 1.467.733.733 0 0 0 0-1.467" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg>
+<text x="944" y="419" class="t">Cockpit</text><text x="944" y="437" class="s">métriques et logs</text>
+<svg x="892" y="478" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g><g><g fill="#f1eefc"><path d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path><path fill-rule="evenodd" d="M48 2H16C8.268 2 2 8.268 2 16v32c0 7.732 6.268 14 14 14h32c7.732 0 14-6.268 14-14V16c0-7.732-6.268-14-14-14M16 0C7.163 0 0 7.163 0 16v32c0 8.837 7.163 16 16 16h32c8.837 0 16-7.163 16-16V16c0-8.837-7.163-16-16-16z" clip-rule="evenodd"></path></g></g><g fill="#521094" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 19a3 3 0 0 1 3-3h26a3 3 0 0 1 3 3v1a1 1 0 1 1-2 0v-1a1 1 0 0 0-1-1H19a1 1 0 0 0-1 1v1a1 1 0 1 1-2 0z"></path><path d="M14.59 13a1 1 0 0 0-.974.774l-3.358 14.51H20.77a3 3 0 0 1 2.676 1.645l.445.879a1 1 0 0 1-1.784.903l-.445-.879a1 1 0 0 0-.892-.548H10V50a1 1 0 0 0 1 1h42a1 1 0 0 0 1-1V30.284H43.247a1 1 0 0 0-.847.47l-.65 1.036a1 1 0 0 1-1.694-1.061l.649-1.037a3 3 0 0 1 2.542-1.408h10.53l-2.933-14.482a1 1 0 0 0-.98-.802zm-2.923.324A3 3 0 0 1 14.59 11h35.274a3 3 0 0 1 2.94 2.405l3.176 15.68q.02.099.02.199V50a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V29.284a1 1 0 0 1 .026-.226z"></path></g><path fill="#a060f6" fill-rule="evenodd" d="M16 24a1 1 0 0 0-1 1v1a1 1 0 1 1-2 0v-1a3 3 0 0 1 3-3h32a3 3 0 0 1 3 3v1a1 1 0 1 1-2 0v-1a1 1 0 0 0-1-1zm12.528 8.311a4.925 4.925 0 1 1 6.965 6.965 4.925 4.925 0 0 1-6.965-6.965m8.38-1.414a6.925 6.925 0 0 0-10.45 9.036l-6.561 6.561a1 1 0 1 0 1.414 1.414l6.561-6.56a6.927 6.927 0 0 0 9.035-10.451Z" clip-rule="evenodd"></path></g></svg>
+<text x="944" y="495" class="t">Audit Trail</text><text x="944" y="513" class="s">qui a fait quoi</text>
+<svg x="892" y="554" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><path fill="#521094" d="m32.714 8 .12.011.053.01.113.03 16.993 5.704a4.33 4.33 0 0 1 2.91 3.484c2.297 15.797-4.05 28.48-18.934 37.903l-.76.474a1 1 0 0 1-1.052.003C16.73 46.153 10.121 33.31 12.46 17.24c.216-1.487 1.186-2.753 2.6-3.366l.309-.118L32.36 8.05l.177-.042zm-.034 2.054-16.635 5.582-.23.088a2.33 2.33 0 0 0-1.377 1.803c-2.143 14.722 3.576 26.489 17.268 35.44l.974.62.967-.615c13.452-8.792 19.211-20.3 17.383-34.659l-.107-.786a2.33 2.33 0 0 0-1.567-1.876z" clip-rule="evenodd" fill-rule="evenodd"></path><path fill="#521094" d="M32.668 15c4.445 0 6.456 2.508 6.58 6.82l.007.438v3.358h-2v-3.358c0-3.581-1.248-5.258-4.587-5.258-3.216 0-4.492 1.555-4.582 4.867l-.005.39v3.394h-2v-3.393c0-4.58 1.993-7.258 6.587-7.258"></path><path fill="#a060f6" d="M38.87 24H26.452a4.173 4.173 0 0 0-4.173 4.173v9.622a4.173 4.173 0 0 0 4.173 4.173H38.87a4.173 4.173 0 0 0 4.173-4.173v-9.622A4.173 4.173 0 0 0 38.87 24m0 2c1.2 0 2.172.973 2.172 2.173v9.622c0 1.2-.973 2.173-2.173 2.173H26.453c-1.2 0-2.173-.973-2.173-2.173v-9.622c0-1.2.973-2.173 2.173-2.173zm-5.206 4.944a1 1 0 0 0-1.984.18v3.67l.016.18a1 1 0 0 0 1.984-.18v-3.67z" clip-rule="evenodd" fill-rule="evenodd"></path></g></svg>
+<text x="944" y="571" class="t">Security Group</text><text x="944" y="589" class="s">entrant fermé par défaut</text>
+<rect x="196" y="680" width="968" height="92" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"/>
+<svg x="212" y="702" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true"><g><g><path fill="#f1eefc" d="M0 16C0 7.163 7.163 0 16 0h32c8.837 0 16 7.163 16 16v32c0 8.837-7.163 16-16 16H16C7.163 64 0 56.837 0 48z"></path></g><g><path fill="#a060f6" d="M39.367 24.622v14.759L52.151 32V17.238z" clip-rule="evenodd" fill-rule="evenodd" opacity=".7"></path><path fill="#521094" d="m11 23.758 12.784 7.386V16.38L11 9zm14.187-6.515 12.784 7.38V39.38L25.187 32V17.244Zm12.777 38.52-12.777-7.385V33.619L37.964 41z" clip-rule="evenodd" fill-rule="evenodd"></path></g></g></svg>
+<text x="268" y="720" class="t">GitHub Actions → Terraform (provider scaleway ~&gt; 2.85)</text>
+<text x="268" y="740" class="s">plan sur chaque PR · apply manuel avec approbation · state chiffré dans Object Storage fr-par</text>
+<text x="268" y="758" class="m">MODIFIER inference_mode SUFFIT À BASCULER DE BACKEND, SANS TOUCHER AUX APPLICATIONS</text>
+<path class="f" d="M178 375 H212" marker-end="url(#a)"/>
+<text x="181" y="366" class="m">443</text>
+<path class="f" d="M398 375 H438" marker-end="url(#a)"/>
+<text x="403" y="366" class="m">PAT</text>
+<path class="f" d="M624 330 H636 V284 H648" marker-end="url(#a)"/>
+<path class="f" d="M624 420 H636 V438 H648" marker-end="url(#a)"/>
+<path class="f" d="M532 300 V104 H648" marker-end="url(#a)"/>
+<text x="540" y="96" class="m">HTTPS · CLÉ IAM</text>
+<path class="o" d="M306 450 V560 H440"/>
+<text x="312" y="552" class="m">SORTIE NAT</text>
+<path class="o" d="M640 680 V650" marker-end="url(#g)"/>
+</svg>    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--tint-serverless);border-color:var(--serverless)"></i>Serverless, au token</span>
+      <span><i class="sw" style="background:var(--tint-gpu);border-color:var(--gpu)"></i>GPU dédié, à l'heure</span>
+      <span><svg width="28" height="10" aria-hidden="true"><line x1="0" y1="5" x2="28" y2="5" stroke="var(--accent)" stroke-width="2"></line></svg>Requêtes</span>
+      <span><svg width="28" height="10" aria-hidden="true"><line x1="0" y1="5" x2="28" y2="5" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"></line></svg>Sortie NAT, gestion Terraform</span>
+    </div>
+    <p class="read small">Les instances n'ont pas d'IP publique. La Public Gateway porte l'entrée HTTPS (redirection des ports 443 et 80), la sortie NAT et le bastion SSH. La passerelle IA expose l'alias <code>mistral-chat</code>, que les applications appellent toujours. Changer <code>inference_mode</code> le redirige vers un autre backend.</p>
+  </section>
+
+  <section>
+    <div class="read">
+      <h2>Idées de projets</h2>
+      <p class="small">Classées par ordre de mise en œuvre. La première sert de socle à toutes les autres.</p>
+    </div>
+    <div class="ideas">
+      <article class="idea lead">
+        <div class="top"><h3>Passerelle Mistral souveraine</h3><div class="chips"><span class="pill s">serverless</span><span class="pill n">template livré</span></div></div>
+        <p>Point d'entrée unique pour toutes vos applications d'IA : une API <code>/v1</code> compatible OpenAI, une clé maître dans Secret Manager, un repli vers le serverless et la journalisation. C'est le template livré sur la branche.</p>
+        <dl>
+          <dt>Services</dt><dd>Public Gateway, Private Network, Instance PLAY2-NANO, Generative APIs, IAM, Secret Manager</dd>
+          <dt>Effort</dt><dd>Une demi-journée après le bootstrap</dd>
+          <dt>Prochain pas</dt><dd>Clés par application et budgets avec une base Managed PostgreSQL</dd>
+        </dl>
+      </article>
+      <article class="idea">
+        <div class="top"><h3>RPG Map Gen sans AWS ni OpenAI</h3><div class="chips"><span class="pill s">serverless</span><span class="pill g">GPU pour les images</span></div></div>
+        <p>Migrer l'application de ce dépôt brique par brique. Embeddings OpenAI vers <code>embeddings</code> (qwen3-embedding-8b) via la passerelle, avec le même SDK. S3 Francfort vers Object Storage fr-par (endpoint boto3). Nova Canvas vers FLUX.1 schnell, de l'allemand Black Forest Labs, sur une L40S. MongoDB Atlas vers Managed MongoDB ou PostgreSQL avec pgvector.</p>
+        <dl>
+          <dt>Services</dt><dd>Passerelle, Object Storage, GPU Instance, Managed Database</dd>
+          <dt>Attention</dt><dd>Les dimensions d'embedding changent (1 536 vers 4 096). Il faut recalculer tous les vecteurs, l'index MongoDB et l'index FAISS du dossier <code>database/</code>.</dd>
+          <dt>Effort</dt><dd>2 à 3 semaines. La génération d'images attend le retour des GPU.</dd>
+        </dl>
+      </article>
+      <article class="idea">
+        <div class="top"><h3>Assistant de code souverain</h3><div class="chips"><span class="pill s">serverless</span></div></div>
+        <p>Devstral 2 via la passerelle, branché dans l'IDE (Continue, Cline, Zed) avec une clé par développeur. Le code ne sort pas de Scaleway.</p>
+        <dl>
+          <dt>Services</dt><dd>Passerelle, Generative APIs (devstral-2-123b-instruct-2512)</dd>
+          <dt>Effort</dt><dd>Un alias de plus dans la configuration LiteLLM</dd>
+        </dl>
+      </article>
+      <article class="idea">
+        <div class="top"><h3>Comptes rendus de réunion</h3><div class="chips"><span class="pill s">serverless</span></div></div>
+        <p>Dépôt d'un enregistrement dans un bucket. Un Serverless Job transcrit avec Voxtral Small, puis Mistral Small rédige le compte rendu et la liste des actions. Les fichiers audio sont supprimés après traitement.</p>
+        <dl>
+          <dt>Services</dt><dd>Object Storage, Serverless Jobs, Generative APIs (voxtral-small-24b-2507)</dd>
+          <dt>Effort</dt><dd>1 semaine</dd>
+        </dl>
+      </article>
+      <article class="idea">
+        <div class="top"><h3>RAG sur documents techniques</h3><div class="chips"><span class="pill s">serverless</span><span class="pill g">bascule GPU possible</span></div></div>
+        <p>Reprend les pipelines sémantiques étudiés fin septembre. Pixtral 12B ou Mistral Small 3.2 (vision) lit les plans et documents scannés. Les embeddings vont dans pgvector. Pour des données sensibles, passer en <code>managed_inference</code> sans repli serverless.</p>
+        <dl>
+          <dt>Services</dt><dd>Passerelle, Object Storage, Serverless Jobs, PostgreSQL + pgvector</dd>
+          <dt>Effort</dt><dd>3 à 4 semaines avec un jeu d'évaluation métier</dd>
+        </dl>
+      </article>
+      <article class="idea">
+        <div class="top"><h3>Labo d'affinage sur H100</h3><div class="chips"><span class="pill g">GPU dédié</span><span class="pill w">attend les stocks</span></div></div>
+        <p>Dans la lignée des notes de ce dépôt sur l'usine d'IA, InfiniBand et Slurm : un affinage LoRA de Mistral Small sur H100, puis le service du modèle affiné en mode <code>gpu_instance</code>. À lancer quand les H100 reviennent en stock.</p>
+        <dl>
+          <dt>Services</dt><dd>GPU Instance H100, Object Storage pour les poids et les jeux de données</dd>
+          <dt>Effort</dt><dd>Variable. Environ 2,87 € par heure pour une H100-1-80G.</dd>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="read"><h2>Les trois modes d'inférence</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th><code>inference_mode</code></th><th>Ce qui tourne</th><th>Quand le choisir</th><th>Coût mensuel (730 h)</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill s">generative_api</span><br><span class="small">par défaut</span></td><td>Generative APIs, Mistral Small 3.2</td><td>Démarrage, trafic irrégulier, pénurie de GPU</td><td class="num">au token</td></tr>
+          <tr><td><span class="pill g">gpu_instance</span></td><td>L40S-1-48G + vLLM, Mistral Small 3.2 en FP8, 32k de contexte</td><td>Contrôle total, modèle affiné, données qui ne doivent pas quitter vos GPU</td><td class="num">≈ 1 073 € (L40S)<br>≈ 575 € (L4, modèle 7 à 12B)</td></tr>
+          <tr><td><span class="pill g">managed_inference</span></td><td>Nœud L40S Scaleway, endpoint privé</td><td>GPU dédié sans exploiter vLLM soi-même</td><td class="num">à l'heure, par nœud</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="read small">Les prix des instances viennent de l'API Scaleway, hors TVA. La passerelle IA (PLAY2-NANO) coûte environ 20 € par mois. La Public Gateway et Managed Inference sont à vérifier sur la page de tarifs.</p>
+  </section>
+
+  <section>
+    <div class="read"><h2>Déployer depuis GitHub</h2></div>
+    <div class="steps read">
+      <div class="step">
+        <span class="m">Une seule fois</span>
+        <h3>Bootstrap</h3>
+        <p><code>scripts/bootstrap.sh</code> crée le bucket de state versionné et une application IAM pour GitHub Actions, puis affiche les secrets à enregistrer. Créez aussi l'environnement GitHub <code>scaleway-prod</code> et ajoutez-y des approbateurs.</p>
+      </div>
+      <div class="step">
+        <span class="m">Configuration</span>
+        <h3>Éditer <code>env/prod.tfvars</code></h3>
+        <ul>
+          <li><code>gateway_domain</code> : votre domaine. Vide, la passerelle utilise <code>&lt;ip&gt;.sslip.io</code>.</li>
+          <li><code>allowed_api_cidrs</code> : qui peut appeler l'API.</li>
+          <li><code>bastion_allowed_cidrs</code> et <code>ssh_public_keys</code> : l'accès SSH.</li>
+        </ul>
+      </div>
+      <div class="step">
+        <span class="m">Pull request</span>
+        <h3>Plan automatique</h3>
+        <p>Chaque PR qui touche <code>scaleway/</code> lance <code>fmt</code>, <code>validate</code> et <code>plan</code>. Le plan apparaît dans le résumé du job.</p>
+      </div>
+      <div class="step">
+        <span class="m">Manuel, avec approbation</span>
+        <h3>Apply</h3>
+        <p><em>Actions › sovereign-ai / terraform › Run workflow › apply</em>. Le job attend l'approbation de l'environnement <code>scaleway-prod</code>.</p>
+      </div>
+      <div class="step">
+        <span class="m">Applications</span>
+        <h3>Brancher le SDK OpenAI</h3>
+<pre>client = OpenAI(base_url="https://ia.example.fr/v1", api_key=MASTER_KEY)
+client.chat.completions.create(model="mistral-chat", messages=[...])
+client.embeddings.create(model="embeddings", input="forêt brumeuse")</pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="read">
+      <h2>Ce qui sort encore de l'UE</h2>
+      <p class="small">Les requêtes et les données restent chez Scaleway à Paris. Ces dépendances n'interviennent qu'au déploiement, ou pour le certificat.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Dépendance</th><th>Juridiction</th><th>Comment la retirer</th></tr></thead>
+        <tbody>
+          <tr><td>Images Docker (GHCR, Docker Hub)</td><td>États-Unis</td><td><code>use_scaleway_registry = true</code>, puis le workflow <em>mirror images</em> vers Container Registry fr-par</td></tr>
+          <tr><td>Poids du modèle (Hugging Face)</td><td>États-Unis</td><td>Copie dans Object Storage fr-par, synchronisée au démarrage (évolution prévue)</td></tr>
+          <tr><td>Runners GitHub Actions</td><td>États-Unis</td><td>Runner auto-hébergé sur une instance Scaleway</td></tr>
+          <tr><td>Certificat TLS (Let's Encrypt)</td><td>États-Unis</td><td>Certificat d'une autorité européenne, ou Load Balancer Scaleway avec votre certificat</td></tr>
+          <tr><td>SecNumCloud</td><td>-</td><td>Scaleway n'est pas encore qualifié. À vérifier si un client public ou un OIV l'exige.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="read">
+    <h2>Ce qui est vérifié, ce qui reste à faire</h2>
+    <ul class="sources" style="font-size:0.95rem;color:var(--fg)">
+      <li><strong>Vérifié :</strong>
+        <ul>
+          <li><code>terraform validate</code> et <code>fmt</code> passent avec le provider scaleway 2.85.0, compilé depuis les sources.</li>
+          <li>Les templates cloud-init produisent un YAML valide.</li>
+          <li>Les noms de modèles, d'images, de types d'instances et de permissions IAM ont été relevés dans un compte Scaleway, en lecture seule.</li>
+        </ul>
+      </li>
+      <li><strong>Non vérifié :</strong>
+        <ul>
+          <li>Aucun <code>plan</code> ni <code>apply</code> n'a tourné.</li>
+          <li>Les appels à <code>api.scaleway.ai</code> sont bloqués depuis cet environnement.</li>
+          <li>Le certificat TLS de l'endpoint privé Managed Inference est à tester.</li>
+        </ul>
+      </li>
+      <li><strong>À durcir avant la production :</strong>
+        <ul>
+          <li>Fixer les versions des images.</li>
+          <li>Restreindre <code>allowed_api_cidrs</code>.</li>
+          <li>Garder le bucket de state privé : il contient la clé API.</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section class="read">
+    <h2>Fichiers livrés</h2>
+    <p class="small">Dossier <a href="../../scaleway/"><code>scaleway/</code></a> de ce dépôt, prêt à être extrait en dépôt template.</p>
+<p class="small">Le code a depuis été réorganisé en modules partagés et en quatre produits : voir <a href="../../scaleway/README.md"><code>scaleway/README.md</code></a> et le catalogue.</p>
+  </section>
+
+  <section class="read">
+    <h2>Sources</h2>
+    <ul class="sources">
+      <li><a href="https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/" target="_blank" rel="noopener">Scaleway, modèles pris en charge par Generative APIs</a></li>
+      <li><a href="https://registry.terraform.io/providers/scaleway/scaleway/latest/docs/resources/inference_deployment" target="_blank" rel="noopener">Provider Terraform Scaleway, <code>scaleway_inference_deployment</code></a></li>
+      <li><a href="https://registry.terraform.io/providers/scaleway/scaleway/latest/docs/resources/vpc_public_gateway_pat_rule" target="_blank" rel="noopener">Provider Terraform Scaleway, règles PAT de la Public Gateway</a></li>
+      <li><a href="https://www.scaleway.com/en/docs/public-gateways/how-to/use-ssh-bastion/" target="_blank" rel="noopener">Scaleway, bastion SSH de la Public Gateway</a></li>
+      <li><a href="https://www.npmjs.com/package/@ultraviolet/icons" target="_blank" rel="noopener">@ultraviolet/icons, icônes produits Scaleway</a></li>
+      <li>Stocks GPU, prix horaires, catalogue Managed Inference et permissions IAM : CLI <code>scw</code> 2.64.0 (lecture seule), le 7 octobre 2026</li>
+    </ul>
+  </section>
+</div>
+
+</body></html>

@@ -1,0 +1,22 @@
+#cloud-config
+# Scaleway GPU OS images ship NVIDIA drivers, Docker and the NVIDIA container toolkit.
+write_files:
+  - path: /opt/sovereign-ai/.env
+    permissions: "0600"
+    content: |
+      VLLM_API_KEY=${vllm_api_key}
+%{ if hf_token != "" ~}
+      HF_TOKEN=${hf_token}
+%{ endif ~}
+
+runcmd:
+  - mkdir -p /opt/models
+  - >-
+    docker run -d --name vllm --restart unless-stopped
+    --gpus all --ipc=host -p 8000:8000
+    --env-file /opt/sovereign-ai/.env
+    -v /opt/models:/root/.cache/huggingface
+    ${image}
+    --model ${model}
+    --served-model-name mistral
+    ${vllm_args}

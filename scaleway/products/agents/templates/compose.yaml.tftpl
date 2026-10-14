@@ -1,0 +1,21 @@
+services:
+  langflow:
+    image: ${langflow_image}
+    env_file: .env
+    ports:
+      - "7860:7860"
+    volumes:
+      - data:/app/langflow
+    restart: unless-stopped
+%{ if enable_scaleway_mcp ~}
+
+  # Reachable only from Langflow on the compose network:
+  # MCP Tools component, Streamable HTTP, URL http://scaleway-mcp:8090/mcp
+  scaleway-mcp:
+    image: ${scaleway_mcp_image}
+    command: ["mcp", "server", "serve", "transport=streamable-http", "address=:8090", "read-only=true"]
+    env_file: scaleway-mcp.env
+    restart: unless-stopped
+%{ endif ~}
+volumes:
+  data: {}

@@ -1,0 +1,40 @@
+services:
+  superset:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ${superset_image}
+        USER root
+        RUN . /app/.venv/bin/activate && uv pip install --no-cache psycopg2-binary clickhouse-connect
+        USER superset
+    env_file: superset.env
+    environment:
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./superset_config.py:/app/pythonpath/superset_config.py:ro
+      - ./clickhouse-ca.pem:/certs/clickhouse-ca.pem:ro
+    restart: unless-stopped
+
+  open-webui:
+    image: ${webui_image}
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - webui:/app/backend/data
+    restart: unless-stopped
+
+  # Official ClickHouse MCP server, read-only. Not published on the host:
+  # Open WebUI reaches it at http://clickhouse-mcp:8000/mcp with a bearer token.
+  clickhouse-mcp:
+    image: docker.io/library/python:3.12-slim
+    command: ["sh", "-c", "pip install --no-cache-dir ${mcp_package} && python -m mcp_clickhouse.main"]
+    env_file: clickhouse-mcp.env
+    volumes:
+      - ./clickhouse-ca.pem:/certs/clickhouse-ca.pem:ro
+    restart: unless-stopped
+
+volumes:
+  webui: {}

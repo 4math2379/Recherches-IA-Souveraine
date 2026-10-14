@@ -1,0 +1,11 @@
+services:
+  open-webui:
+    image: ${image}
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - data:/app/backend/data
+    restart: unless-stopped
+volumes:
+  data: {}
