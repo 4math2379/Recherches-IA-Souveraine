@@ -91,14 +91,14 @@ Le script affiche les valeurs à enregistrer dans GitHub (*Settings > Secrets an
   - `HF_TOKEN` (facultatif)
 - **Variable :** `TF_STATE_BUCKET`
 
-Créez aussi l'environnement GitHub `scaleway-prod` et ajoutez-y des *required reviewers* : c'est cette approbation qui protège `apply` et `destroy`.
+Créez aussi l'environnement GitHub `scaleway-prod` et ajoutez-y des *required reviewers* : c'est cette approbation qui protège `apply`, `destroy` et le workflow *mirror images*.
 
 ### 2. Configurer
 
 Éditez `products/<produit>/env/prod.tfvars`. Ce fichier ne contient aucun secret. Les réglages à revoir en priorité :
 
 - **`gateway_domain` :** votre domaine, par exemple `rag.example.fr`, avec deux enregistrements DNS A vers l'output `public_ip` : le domaine et `*.domaine`. Laissé vide, la passerelle utilise `<ip>.sslip.io`.
-- **`allowed_api_cidrs` :** les plages d'adresses autorisées. Le filtre s'applique à l'API comme aux applications.
+- **`allowed_api_cidrs` :** les plages d'adresses autorisées. Le filtre s'applique à l'API comme aux applications. Vide, la passerelle répond `403` à tout le monde (échec fermé) : renseignez-la, par exemple `["203.0.113.10/32"]`.
 - **`bastion_allowed_cidrs` et `ssh_public_keys` :** l'accès SSH. Sans ces deux réglages, le bastion reste désactivé.
 
 ### 3. Lancer
@@ -142,8 +142,8 @@ La recherche web et la télémétrie sont désactivées dans Open WebUI et Langf
 
 - **Premier déploiement :** aucun produit n'a encore tourné. Prévoyez un `apply` de recette par produit avant de le proposer à un client.
 - **Managed Inference via l'endpoint privé :** l'URL et le certificat TLS de l'endpoint privé n'ont pas pu être testés.
-- **Permissions IAM du compte de déploiement :** l'application GitHub a `IAMApplicationManager` et `IAMPolicyManager` au niveau de l'organisation, nécessaires pour créer les applications IAM des produits. Ces droits permettent en théorie de s'en octroyer d'autres.
+- **Permissions IAM du compte de déploiement :** l'application GitHub a `IAMApplicationManager` et `IAMPolicyManager` au niveau de l'organisation, nécessaires pour créer les applications IAM des produits. Ces droits permettent en théorie de s'en octroyer d'autres. Pour les retirer, créez à la main l'application et la politique IAM de la passerelle, puis supprimez la règle organisationnelle de `scripts/bootstrap.sh` ; passez aussi la clé d'API longue durée à OIDC (voir les commentaires du script).
 - **Secrets dans le state :** clés API, mots de passe et clé maître sont dans le state Terraform et dans le `user_data` des instances. Le bucket de state doit rester privé.
 - **Utilisateur des bases :** les applications utilisent l'utilisateur administrateur de leur PostgreSQL, parce qu'elles créent des extensions (pgvector). Créez des utilisateurs dédiés après le premier démarrage si votre politique l'exige.
-- **Versions d'images :** `main`, `main-stable`, `latest` et `caddy:2` sont des versions mouvantes. Fixez-les à une version précise, voire à un digest.
+- **Versions d'images :** `main`, `main-stable`, `latest` et `caddy:2` sont des versions mouvantes. Fixez-les à une version précise, voire à un `@sha256:` digest, dans `modules/platform/variables.tf` (`settings.images`), `products/*/variables.tf` et la liste du workflow *mirror images* (à garder synchronisés).
 - **Clés par application :** les produits utilisent la clé maître de la passerelle. Pour des clés par équipe et des budgets, donnez une base PostgreSQL à LiteLLM.

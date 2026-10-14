@@ -68,8 +68,9 @@ variable "superset_image" {
 }
 
 variable "open_webui_image" {
-  type    = string
-  default = "ghcr.io/open-webui/open-webui:main"
+  description = "Pin to a release tag or @sha256 digest in production."
+  type        = string
+  default     = "ghcr.io/open-webui/open-webui:main"
 }
 
 variable "clickhouse_mcp_package" {

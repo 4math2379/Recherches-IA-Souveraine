@@ -11,7 +11,7 @@ platform = {
 
   gateway_domain        = "" # e.g. "ia.example.fr" (A records for it and *.it -> output public_ip)
   acme_email            = ""
-  allowed_api_cidrs     = ["0.0.0.0/0"]
+  allowed_api_cidrs     = [] # fail closed: 403 to everyone while empty, e.g. ["203.0.113.10/32"]
   bastion_allowed_cidrs = [] # e.g. ["203.0.113.10/32"]
   ssh_public_keys       = []
 }

@@ -24,12 +24,15 @@ variable "settings" {
     gateway_instance_type = optional(string, "PLAY2-NANO")
     gateway_domain        = optional(string, "")
     acme_email            = optional(string, "")
-    allowed_api_cidrs     = optional(list(string), ["0.0.0.0/0"])
+    # Empty denies every request (fail closed): set your ranges before exposing the API.
+    allowed_api_cidrs     = optional(list(string), [])
     bastion_allowed_cidrs = optional(list(string), [])
     ssh_public_keys       = optional(list(string), [])
     private_network_cidr  = optional(string, "172.16.32.0/22")
 
     use_scaleway_registry = optional(bool, false)
+    # Rolling tags move upstream: pin each image to a release tag or @sha256 digest
+    # (mirrored in the sovereign-ai / mirror images workflow) before production.
     images = optional(object({
       litellm = optional(string, "ghcr.io/berriai/litellm:main-stable")
       caddy   = optional(string, "docker.io/library/caddy:2")

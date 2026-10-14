@@ -20,8 +20,19 @@ scw object bucket create name="$BUCKET" region="$REGION" enable-versioning=true 
 APP_ID=$(scw iam application create name="${PREFIX}-github-terraform" \
   description="Terraform from GitHub Actions" -o json | jq -r .id)
 
-# Project-scoped rights for the stack, plus the organization-scoped IAM rights
-# Terraform needs to create the gateway's own IAM application and policy.
+# Project-scoped rights for the stack.
+#
+# The organization-scoped rules below (IAMApplicationManager, IAMPolicyManager)
+# are only there so Terraform can create the gateway's own IAM application and
+# policy. They are the widest rights here and, in theory, let this identity grant
+# itself more. Two ways to tighten this before production:
+#   - Pre-create the gateway IAM application + policy by hand, then drop rules.1
+#     so CI only ever carries project-scoped rights.
+#   - Move the deployment identity to OIDC (scw iam api-key is a long-lived,
+#     non-rotating secret). Scaleway supports generating short-lived API keys
+#     from a trusted OIDC provider (e.g. GitHub's id-token); see
+#     "scw iam api-key create --with-oidc" style flows. The API key printed at
+#     the end of this script is then no longer needed as a GitHub secret.
 scw iam policy create name="${PREFIX}-github-terraform" application-id="$APP_ID" \
   rules.0.project-ids.0="$PROJECT_ID" \
   rules.0.permission-set-names.0=InstancesFullAccess \

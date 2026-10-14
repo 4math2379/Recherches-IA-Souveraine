@@ -4,10 +4,19 @@
 *.tfstate.*
 *.tfplan
 .terraform.lock.hcl
+# Auto-loaded and local-override files can carry values that must not be committed.
+*.auto.tfvars
+*.tfvars.json
+override.tf
+*_override.tf
+crash.log
 scaleway/products/*/env/backend.hcl
 # Secrets
 .env
+.env.*
+!.env.example
 *.pem
+*.key
 # Divers
 .DS_Store
 __pycache__/

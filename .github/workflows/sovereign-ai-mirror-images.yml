@@ -16,9 +16,15 @@ permissions:
 jobs:
   mirror:
     runs-on: ubuntu-latest
+    # Creating/overwriting the registry namespace needs the same approval as a deploy.
+    environment: scaleway-prod
     strategy:
       matrix:
         image:
+          # Keep in sync with modules/platform/variables.tf (settings.images) and
+          # products/*/variables.tf. Prefer an immutable reference per image: a
+          # release tag, or better an @sha256:<digest>. The rolling tags below
+          # (main, main-stable, latest, caddy:2) move upstream without warning.
           # Platform (modules/platform/variables.tf, settings.images)
           - ghcr.io/berriai/litellm:main-stable
           - docker.io/library/caddy:2
