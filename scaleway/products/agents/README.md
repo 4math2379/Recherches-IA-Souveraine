@@ -33,7 +33,7 @@ Construisez des agents à la souris (outils, mémoire, appels d'API, enchaîneme
 
 Dans `env/prod.tfvars` :
 
-- **`platform` :** domaine, plages autorisées et mode d'inférence.
+- **`platform` :** domaine, plages autorisées et mode d'inférence. `allowed_api_cidrs` est obligatoire : vide, l'application répond `403` (échec fermé).
 - **`enable_scaleway_mcp` :** l'outil MCP Scaleway, désactivé par défaut.
 - **`app_instance_type` et `db_node_type` :** la taille de l'instance et de la base.
 

@@ -21,6 +21,13 @@ Modèles exposés : `mistral-chat`, `embeddings` (qwen3-embedding-8b) et, avec u
 
 Avec le SDK OpenAI, il suffit de changer `base_url` et `api_key`.
 
+## Réglages
+
+Dans `env/prod.tfvars`, l'objet `platform` porte le domaine et les plages autorisées :
+
+- **`allowed_api_cidrs` :** obligatoire. Vide, l'API répond `403` à tout le monde (échec fermé) ; renseignez vos plages, par exemple `["203.0.113.10/32"]`.
+- **`gateway_domain` :** votre domaine. Vide, la passerelle utilise `<ip>.sslip.io`.
+
 ## Changer de backend
 
 Dans `env/prod.tfvars`, changez `inference_mode` dans l'objet `platform` (`gpu_instance` ou `managed_inference`), puis lancez `apply`. Les applications ne changent pas. L'instance passerelle est recréée : quelques minutes de coupure.

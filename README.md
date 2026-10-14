@@ -41,6 +41,8 @@ Recherches menées en septembre et octobre 2026.
 
 Le dossier [`scaleway/`](scaleway/README.md) contient quatre produits Terraform déployables depuis GitHub Actions. Ils partagent le même socle : réseau privé, passerelle d'API compatible OpenAI et modèles Mistral.
 
+![Architecture du socle commun : réseau privé, Public Gateway, passerelle d'API Mistral et inférence](scaleway/docs/architecture-gateway.svg)
+
 | Produit | Pour quoi faire |
 |---|---|
 | [`gateway`](scaleway/products/gateway/README.md) | API Mistral compatible OpenAI |
@@ -51,6 +53,7 @@ Le dossier [`scaleway/`](scaleway/README.md) contient quatre produits Terraform 
 - **Validation :** la configuration passe `terraform validate` et `terraform fmt` hors ligne, avec le provider `scaleway/scaleway` 2.85.0. Aucun produit n'a encore été déployé.
 - **Workflows :** ils sont dans `.github/workflows/`. Ils attendent les secrets décrits dans `scaleway/README.md`.
 - **Serveur MCP :** `.mcp.json` configure le serveur MCP Scaleway en lecture seule pour Claude Code. Les identifiants viennent des variables d'environnement `SCW_*` et ne sont jamais stockés dans le dépôt.
+- **Sécurité :** le déploiement est en échec fermé par défaut (la passerelle répond `403` tant que `allowed_api_cidrs` n'est pas renseigné). Les réglages de durcissement sont détaillés dans [`scaleway/README.md`](scaleway/README.md#sécurité-par-défaut).
 
 ## Organisation
 

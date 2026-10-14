@@ -28,7 +28,7 @@ Les réglages sont portés par Terraform (`ENABLE_PERSISTENT_CONFIG=false`) : un
 
 Dans `env/prod.tfvars` :
 
-- **`platform` :** domaine, plages autorisées et mode d'inférence. Pour un corpus sensible : `inference_mode = "managed_inference"` et `serverless_fallback = false`.
+- **`platform` :** domaine, plages autorisées et mode d'inférence. `allowed_api_cidrs` est obligatoire : vide, l'application répond `403` (échec fermé). Pour un corpus sensible : `inference_mode = "managed_inference"` et `serverless_fallback = false`.
 - **`app_instance_type` :** `PLAY2-MICRO` par défaut. Passez à 16 Go au-delà de quelques dizaines d'utilisateurs simultanés.
 - **`db_node_type` et `db_high_availability` :** la base de données.
 

@@ -72,6 +72,14 @@ Avec `serverless_fallback = true`, la passerelle bascule sur Generative APIs si 
 
 Tous les réglages du socle sont regroupés dans l'objet `platform` du fichier `env/prod.tfvars` de chaque produit. La liste complète, avec les valeurs par défaut, se trouve dans `modules/platform/variables.tf`.
 
+## Sécurité par défaut
+
+- **API en échec fermé :** tant que `allowed_api_cidrs` est vide, la passerelle répond `403` à tout le monde. Rien n'est exposé sans une liste d'adresses explicite.
+- **Instances privées :** aucune IP publique hors la Public Gateway. Le bastion SSH reste désactivé sans `bastion_allowed_cidrs` et `ssh_public_keys`.
+- **Secrets :** clé maître et mots de passe dans Secret Manager, jamais dans le dépôt. Le state Terraform et le `user_data` en gardent une copie : le bucket de state doit rester privé.
+- **CI verrouillée :** `apply`, `destroy` et la copie des images attendent l'approbation de l'environnement GitHub `scaleway-prod`.
+- **Images :** épingler chaque image à une version, voire à un `@sha256:` digest. Voir *Points à vérifier avant la production*.
+
 ## Déployer un produit
 
 ### 1. Une seule fois, pour tous les produits

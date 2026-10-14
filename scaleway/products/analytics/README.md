@@ -52,6 +52,7 @@ Puis dans le chat : « Quel est le chiffre d'affaires par mois sur 2026 ? »
 
 Dans `env/prod.tfvars` :
 
+- **`platform` :** domaine et plages autorisées. `allowed_api_cidrs` est obligatoire : vide, le chat et Superset répondent `403` (échec fermé).
 - **`clickhouse_cpu_min`, `clickhouse_cpu_max` et `clickhouse_replicas` :** l'entrepôt (autoscaling CPU). Mettez 2 réplicas ou plus pour la haute disponibilité.
 - **`app_instance_type` :** passez à 16 Go en production (Superset et Open WebUI sur la même instance).
 - **`clickhouse_mcp_package` :** fixez une version du paquet (`mcp-clickhouse==x.y.z`).
