@@ -21,6 +21,8 @@ on:
 
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 env:
   TF_IN_AUTOMATION: "true"
@@ -70,10 +72,34 @@ jobs:
       - name: Validate
         run: terraform validate
       - name: Plan
+        id: plan
         run: |
           set -o pipefail
-          terraform plan -var-file=env/prod.tfvars -no-color | tee plan.txt
-          { echo "### Terraform plan: ${{ matrix.product }}"; echo '```'; tail -n 60 plan.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          # Create a binary plan and a human-readable view
+          terraform plan -var-file=env/prod.tfvars -out=plan.tfplan -no-color
+          terraform show -no-color plan.tfplan > plan.txt
+
+          # Add a short excerpt to the step summary for quick review
+          echo "### Terraform plan: ${{ matrix.product }}" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          head -n 200 plan.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ matrix.product }}
+          path: |
+            plan.txt
+            plan.tfplan
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-file: plan.txt
+          title: "Terraform plan: ${{ matrix.product }}"
+
 
   apply:
     if: github.event_name == 'workflow_dispatch' && inputs.action != 'plan'
