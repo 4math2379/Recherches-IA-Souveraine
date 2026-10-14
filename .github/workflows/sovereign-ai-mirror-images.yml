@@ -36,9 +36,15 @@ jobs:
           - docker.io/apache/superset:5.0.0
           - docker.io/library/python:3.12-slim
     steps:
+      - uses: actions/checkout@v4
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
       - name: Copy with skopeo
         env:
           SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+          SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
           IMAGE: ${{ matrix.image }}
           NAMESPACE: ${{ inputs.namespace }}
         run: |
