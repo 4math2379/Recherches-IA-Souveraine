@@ -21,3 +21,5 @@ scaleway/products/*/env/backend.hcl
 .DS_Store
 __pycache__/
 node_modules/
+# Outils internes, non publiés
+outils/

@@ -60,7 +60,6 @@ Le dossier [`scaleway/`](scaleway/README.md) contient quatre produits Terraform 
 ```
 rapports/            pages HTML autonomes, par thème
 scaleway/            templates Terraform, schémas, scripts
-outils/diagrammes/   génération des schémas aux icônes officielles Scaleway
 .github/workflows/   plan et apply Terraform, copie des images vers Scaleway
 ```
 
