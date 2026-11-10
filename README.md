@@ -27,22 +27,22 @@
 
 ---
 
-## ✨ En bref
+## En bref
 
-- 📚 **10 rapports** sous forme de pages HTML autonomes, avec schémas, sources et points à vérifier.
-- 🇪🇺 **Cloud européen** : Mistral sur Scaleway, en région Paris. Architecture cible, modes d'inférence, coûts.
-- 🟩 **Usine d'IA sur site** : GPU NVIDIA reliés par InfiniBand, du simulateur ibsim à la fabric commutée.
-- 🗓️ **Clusters GPU** : ordonnancement avec Slurm, POC exécuté sur fabric simulée.
-- 🧱 **4 produits Terraform** déployables depuis GitHub Actions (API Mistral, RAG, agents, analyse) sur un socle commun.
-- 🔒 **Sécurité par défaut** : instances privées, API en échec fermé, secrets dans Secret Manager, déploiement soumis à approbation.
+- **10 rapports** sous forme de pages HTML autonomes, avec schémas, sources et points à vérifier.
+- **Cloud européen** : Mistral sur Scaleway, en région Paris. Architecture cible, modes d'inférence, coûts.
+- **Usine d'IA sur site** : GPU NVIDIA reliés par InfiniBand, du simulateur ibsim à la fabric commutée.
+- **Clusters GPU** : ordonnancement avec Slurm, POC exécuté sur fabric simulée.
+- **4 produits Terraform** déployables depuis GitHub Actions (API Mistral, RAG, agents, analyse) sur un socle commun.
+- **Sécurité par défaut** : instances privées, API en échec fermé, secrets dans Secret Manager, déploiement soumis à approbation.
 
 <a id="rapports"></a>
 
-## 📚 Rapports
+## Rapports
 
 > Les rapports sont des pages HTML autonomes. Ouvrez-les dans un navigateur, ou publiez le dépôt avec GitHub Pages (*Settings > Pages > Deploy from a branch*, dossier racine) : [`index.html`](index.html) sert alors de sommaire.
 
-### ☁️ Scaleway : Mistral souverain dans le cloud européen
+### Scaleway : Mistral souverain dans le cloud européen
 
 | Rapport | Contenu |
 |---|---|
@@ -50,7 +50,7 @@
 | [IA souveraine Scaleway](rapports/scaleway/ia-souveraine-scaleway.html) | État des GPU et des modèles Mistral disponibles, six idées de projets, trois modes d'inférence, déploiement depuis GitHub |
 | [Catalogue IA souveraine](rapports/scaleway/catalogue-ia-souveraine.html) | Trois produits packagés (RAG, agents, analyse) sur un socle commun, avec schémas et mise en route |
 
-### 🟩 NVIDIA et InfiniBand : usine d'IA sur site
+### NVIDIA et InfiniBand : usine d'IA sur site
 
 | Rapport | Contenu |
 |---|---|
@@ -61,7 +61,7 @@
 | [Le matériel du Subnet Manager](rapports/nvidia-infiniband/materiel-subnet-manager.html) | Commutateurs managés, appliances UFM, cartes ConnectX, DPU BlueField : références et prix |
 | [Lab InfiniBand local](rapports/nvidia-infiniband/lab-infiniband-local.html) | Parcours en quatre niveaux, du simulateur ibsim (testé) à la fabric commutée |
 
-### 🗓️ Slurm : ordonnancement de clusters GPU
+### Slurm : ordonnancement de clusters GPU
 
 | Rapport | Contenu |
 |---|---|
@@ -69,7 +69,7 @@
 
 <a id="code-scaleway"></a>
 
-## ☁️ Code : IA souveraine sur Scaleway
+## Code : IA souveraine sur Scaleway
 
 Le dossier [`scaleway/`](scaleway/README.md) contient quatre produits Terraform déployables depuis GitHub Actions. Ils partagent le même socle : réseau privé, passerelle d'API compatible OpenAI et modèles Mistral. Seule la couche applicative change d'un produit à l'autre.
 
@@ -84,7 +84,7 @@ Le dossier [`scaleway/`](scaleway/README.md) contient quatre produits Terraform 
 | [`agents`](scaleway/products/agents/README.md) | Construire des agents et des workflows, les appeler en API | Langflow, MCP Scaleway (option) |
 | [`analytics`](scaleway/products/analytics/README.md) | Interroger ses données en français, tableaux de bord | ClickHouse, Superset, Open WebUI |
 
-### 🧭 Comment ça marche
+### Comment ça marche
 
 ```mermaid
 flowchart LR
@@ -101,7 +101,7 @@ flowchart LR
 
 <a id="demarrer"></a>
 
-## 🚀 Démarrer
+## Démarrer
 
 **Lire les rapports :** clonez le dépôt et ouvrez [`index.html`](index.html) dans un navigateur, ou activez GitHub Pages.
 
@@ -115,7 +115,7 @@ scw init                 # profil administrateur
 
 Enregistrez ensuite les secrets affichés dans GitHub, créez l'environnement `scaleway-prod` avec des *required reviewers*, puis lancez *Actions > sovereign-ai / terraform*. Toutes les étapes : **[scaleway/README.md](scaleway/README.md#déployer-un-produit)**.
 
-## 🧱 Technologies
+## Technologies
 
 | | Technologie | Rôle dans ce dépôt |
 |---|---|---|
@@ -124,11 +124,11 @@ Enregistrez ensuite les secrets affichés dans GitHub, créez l'environnement `s
 | <img src="https://cdn.simpleicons.org/terraform/7B42BC" width="22" alt=""> | [Terraform](https://www.terraform.io) | Les quatre produits et leur socle commun |
 | <img src="https://cdn.simpleicons.org/githubactions/2088FF" width="22" alt=""> | [GitHub Actions](https://docs.github.com/actions) | `fmt`, `validate` et `plan` sur chaque PR ; `apply`, `destroy` et copie des images après approbation |
 | <img src="https://cdn.simpleicons.org/nvidia/76B900" width="22" alt=""> | [NVIDIA InfiniBand](https://www.nvidia.com/fr-fr/networking/products/infiniband/) | Usine d'IA sur site : Quantum-X800, ConnectX, Subnet Manager, UFM |
-| 🗓️ | [Slurm](https://slurm.schedmd.com) | Ordonnancement des clusters GPU |
-| 🔀 | [LiteLLM](https://www.litellm.ai) | Passerelle d'API compatible OpenAI, clés et repli |
-| 💬 | [Open WebUI](https://openwebui.com), [Langflow](https://www.langflow.org), [Superset](https://superset.apache.org) | Applications des produits `rag`, `agents` et `analytics` |
+| | [Slurm](https://slurm.schedmd.com) | Ordonnancement des clusters GPU |
+| | [LiteLLM](https://www.litellm.ai) | Passerelle d'API compatible OpenAI, clés et repli |
+| | [Open WebUI](https://openwebui.com), [Langflow](https://www.langflow.org), [Superset](https://superset.apache.org) | Applications des produits `rag`, `agents` et `analytics` |
 
-## 🗂️ Organisation
+## Organisation
 
 ```
 rapports/            pages HTML autonomes, par thème
@@ -145,12 +145,12 @@ index.html           sommaire des rapports (GitHub Pages)
 
 <a id="avertissements"></a>
 
-## ⚠️ Avertissements
+## Avertissements
 
 - **Chiffres datés :** prix, stocks et versions ont été relevés à une date donnée. Vérifiez-les avant tout engagement.
 - **Sources :** certaines pages officielles n'étaient pas lisibles depuis l'environnement de rédaction. Chaque rapport indique ses sources et ce qui reste à vérifier.
 - **Mentions tierces :** voir [`NOTICE.md`](NOTICE.md).
 
-## 🤝 Contact
+## Contact
 
 Questions, remarques ou corrections : ouvrez une **[issue](https://github.com/4math2379/Recherches-IA-Souveraine/issues)**.
