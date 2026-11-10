@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <linearGradient id="gradSecret" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffebee"/><stop offset="100%" stop-color="#ffcdd2"/></linearGradient>
+    <linearGradient id="gradCloud" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e3f2fd"/><stop offset="100%" stop-color="#bbdefb"/></linearGradient>
+    <linearGradient id="gradSaaS" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e8f5e9"/><stop offset="100%" stop-color="#c8e6c9"/></linearGradient>
+    <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1a237e"/><stop offset="100%" stop-color="#283593"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#555"/></marker>
+  </defs>
+  <rect x="0" y="0" width="1200" height="60" fill="url(#gradHeader)"/>
+  <text x="600" y="38" text-anchor="middle" fill="white" font-size="22" font-weight="bold">🇫🇷 Architecture IA Souveraine — 3 Niveaux</text>
+  <!-- NIVEAU 1 -->
+  <rect x="30" y="90" width="360" height="580" rx="12" fill="url(#gradSecret)" stroke="#c62828" stroke-width="2" filter="url(#shadow)"/>
+  <text x="210" y="120" text-anchor="middle" font-size="16" font-weight="bold" fill="#c62828">🥇 NIVEAU 1 — CONFIDENTIEL DÉFENSE</text>
+  <text x="210" y="140" text-anchor="middle" font-size="11" fill="#666">On-premise · Air-gapped · InfiniBand</text>
+  <rect x="70" y="165" width="280" height="45" rx="8" fill="white" stroke="#c62828" stroke-width="1.5"/>
+  <text x="210" y="193" text-anchor="middle" font-size="13">👤 Client Vibe — réseau classifié</text>
+  <line x1="210" y1="210" x2="210" y2="235" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="70" y="240" width="280" height="50" rx="8" fill="white" stroke="#e65100" stroke-width="2"/>
+  <text x="210" y="260" text-anchor="middle" font-size="13" font-weight="bold">🔀 LiteLLM Gateway</text>
+  <text x="210" y="278" text-anchor="middle" font-size="10" fill="#888">10.0.0.10/11 · HA · air-gapped</text>
+  <line x1="210" y1="290" x2="210" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="70" y="320" width="280" height="50" rx="8" fill="white" stroke="#1565c0" stroke-width="2"/>
+  <text x="210" y="340" text-anchor="middle" font-size="13" font-weight="bold">⚙️ Slurm + SlurmDBD</text>
+  <text x="210" y="358" text-anchor="middle" font-size="10" fill="#888">quotas par client · topology/tree</text>
+  <line x1="210" y1="370" x2="210" y2="395" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="70" y="400" width="280" height="50" rx="8" fill="white" stroke="#6a1b9a" stroke-width="2"/>
+  <text x="210" y="420" text-anchor="middle" font-size="13" font-weight="bold">🧠 vLLM multi-nœuds</text>
+  <text x="210" y="438" text-anchor="middle" font-size="10" fill="#888">Mistral open-weights · NCCL/IB</text>
+  <line x1="210" y1="450" x2="210" y2="475" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="70" y="480" width="280" height="60" rx="8" fill="white" stroke="#2e7d32" stroke-width="2"/>
+  <text x="210" y="502" text-anchor="middle" font-size="13" font-weight="bold">🖥️ Cluster GPU NVIDIA</text>
+  <text x="210" y="520" text-anchor="middle" font-size="10" fill="#888">6 nœuds × 8 H100 80GB · InfiniBand HDR</text>
+  <rect x="90" y="560" width="240" height="35" rx="17" fill="#c62828"/>
+  <text x="210" y="582" text-anchor="middle" font-size="12" fill="white" font-weight="bold">🔒 AIR-GAPPED — 0 connexion externe</text>
+  <text x="210" y="625" text-anchor="middle" font-size="11" fill="#c62828" font-weight="bold">CAPEX ~600-900k€ · OPEX ~150-250k€/an</text>
+  <!-- NIVEAU 2 -->
+  <rect x="420" y="90" width="360" height="580" rx="12" fill="url(#gradCloud)" stroke="#1565c0" stroke-width="2" filter="url(#shadow)"/>
+  <text x="600" y="120" text-anchor="middle" font-size="16" font-weight="bold" fill="#1565c0">🥈 NIVEAU 2 — ENTREPRISE CLOUD</text>
+  <text x="600" y="140" text-anchor="middle" font-size="11" fill="#666">Scaleway fr-par · Mistral Compute · K8s</text>
+  <rect x="460" y="165" width="280" height="45" rx="8" fill="white" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="600" y="193" text-anchor="middle" font-size="13">👤 Client Vibe — VPN/SSO</text>
+  <line x1="600" y1="210" x2="600" y2="235" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="460" y="240" width="280" height="50" rx="8" fill="white" stroke="#e65100" stroke-width="2"/>
+  <text x="600" y="260" text-anchor="middle" font-size="13" font-weight="bold">🔀 LiteLLM Gateway</text>
+  <text x="600" y="278" text-anchor="middle" font-size="10" fill="#888">Kubernetes HA · 2 pods · VPC privé</text>
+  <line x1="600" y1="290" x2="600" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="460" y="320" width="280" height="50" rx="8" fill="white" stroke="#1565c0" stroke-width="2"/>
+  <text x="600" y="340" text-anchor="middle" font-size="13" font-weight="bold">☸️ Kapsule K8s</text>
+  <text x="600" y="358" text-anchor="middle" font-size="10" fill="#888">Scaleway Paris 🇫🇷 · Cilium CNI</text>
+  <line x1="600" y1="370" x2="600" y2="395" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="460" y="400" width="280" height="50" rx="8" fill="white" stroke="#6a1b9a" stroke-width="2"/>
+  <text x="600" y="420" text-anchor="middle" font-size="13" font-weight="bold">🧠 Mistral LLM</text>
+  <text x="600" y="438" text-anchor="middle" font-size="10" fill="#888">API La Plateforme UE ou vLLM self-hosted</text>
+  <line x1="600" y1="450" x2="600" y2="475" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="460" y="480" width="280" height="60" rx="8" fill="white" stroke="#2e7d32" stroke-width="2"/>
+  <text x="600" y="502" text-anchor="middle" font-size="13" font-weight="bold">🖥️ GPU Scaleway</text>
+  <text x="600" y="520" text-anchor="middle" font-size="10" fill="#888">L40S / H100 · fr-par-1 · pas d'IP publique</text>
+  <rect x="480" y="560" width="240" height="35" rx="17" fill="#1565c0"/>
+  <text x="600" y="582" text-anchor="middle" font-size="12" fill="white" font-weight="bold">🇪🇺 Données UE uniquement · DPA RGPD</text>
+  <text x="600" y="625" text-anchor="middle" font-size="11" fill="#1565c0" font-weight="bold">~5-15k€/mois · conforme NIS2/DORA/AI Act</text>
+  <!-- NIVEAU 3 -->
+  <rect x="810" y="90" width="360" height="580" rx="12" fill="url(#gradSaaS)" stroke="#2e7d32" stroke-width="2" filter="url(#shadow)"/>
+  <text x="990" y="120" text-anchor="middle" font-size="16" font-weight="bold" fill="#2e7d32">🥉 NIVEAU 3 — TPE/PME SAAS</text>
+  <text x="990" y="140" text-anchor="middle" font-size="11" fill="#666">Vibe Enterprise managé · CCL Consulting</text>
+  <rect x="850" y="165" width="280" height="45" rx="8" fill="white" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="990" y="193" text-anchor="middle" font-size="13">👤 Client — navigateur web</text>
+  <line x1="990" y1="210" x2="990" y2="235" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="850" y="240" width="280" height="50" rx="8" fill="white" stroke="#e65100" stroke-width="2"/>
+  <text x="990" y="260" text-anchor="middle" font-size="13" font-weight="bold">🔀 LiteLLM Gateway</text>
+  <text x="990" y="278" text-anchor="middle" font-size="10" fill="#888">Multi-tenant · quotas par client</text>
+  <line x1="990" y1="290" x2="990" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="850" y="320" width="280" height="50" rx="8" fill="white" stroke="#2e7d32" stroke-width="2"/>
+  <text x="990" y="340" text-anchor="middle" font-size="13" font-weight="bold">🤖 Vibe Enterprise</text>
+  <text x="990" y="358" text-anchor="middle" font-size="10" fill="#888">Workspaces isolés · connecteurs MCP</text>
+  <line x1="990" y1="370" x2="990" y2="395" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="850" y="400" width="280" height="50" rx="8" fill="white" stroke="#6a1b9a" stroke-width="2"/>
+  <text x="990" y="420" text-anchor="middle" font-size="13" font-weight="bold">🌐 Mistral API</text>
+  <text x="990" y="438" text-anchor="middle" font-size="10" fill="#888">La Plateforme · hébergé UE · DPA signé</text>
+  <rect x="850" y="470" width="280" height="70" rx="8" fill="white" stroke="#2e7d32" stroke-width="2"/>
+  <text x="990" y="492" text-anchor="middle" font-size="12" font-weight="bold">✅ Zéro complexité technique</text>
+  <text x="990" y="510" text-anchor="middle" font-size="10" fill="#888">Pas d'infra à gérer · support FR</text>
+  <text x="990" y="526" text-anchor="middle" font-size="10" fill="#888">Onboarding en 1h</text>
+  <rect x="870" y="560" width="240" height="35" rx="17" fill="#2e7d32"/>
+  <text x="990" y="582" text-anchor="middle" font-size="12" fill="white" font-weight="bold">🇪🇺 UE uniquement · RGPD natif</text>
+  <text x="990" y="625" text-anchor="middle" font-size="11" fill="#2e7d32" font-weight="bold">29,99-49,99€/user/mois · tout inclus</text>
+  <text x="600" y="690" text-anchor="middle" font-size="10" fill="#999">CCL Consulting · 4Math · Novembre 2026 · Architecture IA Souveraine France 🇫🇷</text>
+</svg>

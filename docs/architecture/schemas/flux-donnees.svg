@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <linearGradient id="hdrFlux" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1a237e"/><stop offset="100%" stop-color="#0d47a1"/>
+    </linearGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="ar" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1565c0"/>
+    </marker>
+  </defs>
+  
+  <rect x="0" y="0" width="1000" height="50" fill="url(#hdrFlux)"/>
+  <text x="500" y="33" text-anchor="middle" fill="white" font-size="18" font-weight="bold">🔀 Flux de données — Comparaison des 3 niveaux</text>
+  
+  <!-- Client central -->
+  <rect x="400" y="80" width="200" height="60" rx="10" fill="#fff3e0" stroke="#e65100" stroke-width="2.5" filter="url(#sh)"/>
+  <text x="500" y="105" text-anchor="middle" font-size="16">👤</text>
+  <text x="500" y="128" text-anchor="middle" font-size="12" font-weight="bold">Client Vibe</text>
+  
+  <!-- Flèches vers les 3 niveaux -->
+  <line x1="450" y1="140" x2="180" y2="190" stroke="#1565c0" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="500" y1="140" x2="500" y2="190" stroke="#1565c0" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="550" y1="140" x2="820" y2="190" stroke="#1565c0" stroke-width="2" marker-end="url(#ar)"/>
+  
+  <!-- NIVEAU 1 -->
+  <rect x="30" y="200" width="300" height="260" rx="12" fill="#ffebee" stroke="#c62828" stroke-width="2" filter="url(#sh)"/>
+  <text x="180" y="228" text-anchor="middle" font-size="14" font-weight="bold" fill="#c62828">🥇 SECRET — Air-gapped</text>
+  <text x="180" y="252" text-anchor="middle" font-size="11" fill="#666">Données → LiteLLM local → vLLM local → GPU local</text>
+  <rect x="55" y="275" width="250" height="50" rx="8" fill="white" stroke="#c62828"/>
+  <text x="180" y="295" text-anchor="middle" font-size="11" font-weight="bold">📍 Toutes les données restent</text>
+  <text x="180" y="313" text-anchor="middle" font-size="11" font-weight="bold">sur le site du client</text>
+  <rect x="55" y="340" width="250" height="35" rx="17" fill="#c62828"/>
+  <text x="180" y="362" text-anchor="middle" font-size="11" fill="white" font-weight="bold">🔒 0 transfert externe</text>
+  <text x="180" y="405" text-anchor="middle" font-size="10" fill="#c62828">OIV · Défense · Nucléaire · R&amp;D stratégique</text>
+  <text x="180" y="425" text-anchor="middle" font-size="10" fill="#888">Immunité Cloud Act totale</text>
+  
+  <!-- NIVEAU 2 -->
+  <rect x="350" y="200" width="300" height="260" rx="12" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" filter="url(#sh)"/>
+  <text x="500" y="228" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">🥈 ENTREPRISE — Cloud UE</text>
+  <text x="500" y="252" text-anchor="middle" font-size="11" fill="#666">Données → LiteLLM Scaleway → Mistral API UE</text>
+  <rect x="375" y="275" width="250" height="50" rx="8" fill="white" stroke="#1565c0"/>
+  <text x="500" y="295" text-anchor="middle" font-size="11" font-weight="bold">📍 Données hébergées en UE</text>
+  <text x="500" y="313" text-anchor="middle" font-size="11" font-weight="bold">Scaleway fr-par · Mistral Compute</text>
+  <rect x="375" y="340" width="250" height="35" rx="17" fill="#1565c0"/>
+  <text x="500" y="362" text-anchor="middle" font-size="11" fill="white" font-weight="bold">🇪🇺 UE uniquement · DPA RGPD</text>
+  <text x="500" y="405" text-anchor="middle" font-size="10" fill="#1565c0">ETI · Banques · Santé · Collectivités</text>
+  <text x="500" y="425" text-anchor="middle" font-size="10" fill="#888">Immunité Cloud Act · NIS2 · DORA</text>
+  
+  <!-- NIVEAU 3 -->
+  <rect x="670" y="200" width="300" height="260" rx="12" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#sh)"/>
+  <text x="820" y="228" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">🥉 TPE/PME — SaaS</text>
+  <text x="820" y="252" text-anchor="middle" font-size="11" fill="#666">Données → LiteLLM CCL → Mistral API UE</text>
+  <rect x="695" y="275" width="250" height="50" rx="8" fill="white" stroke="#2e7d32"/>
+  <text x="820" y="295" text-anchor="middle" font-size="11" font-weight="bold">📍 Données en UE via CCL</text>
+  <text x="820" y="313" text-anchor="middle" font-size="11" font-weight="bold">DPA RGPD signé · hébergé UE</text>
+  <rect x="695" y="340" width="250" height="35" rx="17" fill="#2e7d32"/>
+  <text x="820" y="362" text-anchor="middle" font-size="11" fill="white" font-weight="bold">🇪🇺 UE · RGPD natif · managé</text>
+  <text x="820" y="405" text-anchor="middle" font-size="10" fill="#2e7d32">TPE · PME · Indépendants · Libéraux</text>
+  <text x="820" y="425" text-anchor="middle" font-size="10" fill="#888">Zéro complexité · support FR</text>
+  
+  <text x="500" y="490" text-anchor="middle" font-size="10" fill="#999">CCL Consulting · Novembre 2026 · 🇫🇷 Toutes les données restent souveraines</text>
+</svg>
