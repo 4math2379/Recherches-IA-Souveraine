@@ -1,46 +1,28 @@
-# 🏪 Niveau 3 — TPE/PME SaaS
-> Vibe Enterprise managé par CCL Consulting
+# Niveau 3 — TPE/PME SaaS
+> Vibe Enterprise manage par CCL Consulting
 
 ---
 
-## ☁️ Architecture
-
-```
-CLIENT (navigateur)
-    │ HTTPS TLS 1.3
-    ▼
-┌────────────────────────────┐
-│   INFRA CCL (managée)       │
-│  ┌──────────────────────┐  │
-│  │ LiteLLM Gateway       │  │  ← quotas/client
-│  └──────────┬───────────┘  │
-│  ┌──────────┴───────────┐  │
-│  │ Vibe Enterprise       │  │  ← workspaces isolés
-│  └──────────┬───────────┘  │
-│  ┌──────────┴───────────┐  │
-│  │ Mistral API (UE)      │  │  ← DPA RGPD
-│  └──────────────────────┘  │
-│   Hébergé Scaleway France 🇫🇷│
-└────────────────────────────┘
-```
-
----
-
-## ✨ Offre client
+## Offre client
 
 - Vibe Pro/Team avec agents et connecteurs MCP
-- Mistral Large via API, hébergé UE
-- Workspace isolé par client
-- DPA RGPD signé
-- Support CCL en français
-- Aucune complexité technique
+- Mistral Large via API, heberge UE
+- Workspace isole par client
+- DPA RGPD signe
+- Support CCL en francais
+- Aucune complexite technique
 
----
+## Conformite
 
-## 💰 Tarification
+- RGPD : DPA signe, donnees UE
+- Hebergement : Scaleway France ou Mistral Compute (UE)
+- Cloud Act : immune (editeur francais, hebergement UE)
+- AI Act : Mistral conforme
+
+## Tarification
 
 | Offre | Prix | Inclus |
 |-------|------|--------|
-| Vibe TPE | 29,99€/user/mois | Vibe Team + Mistral API + support |
-| Vibe PME | 49,99€/user/mois | + connecteurs avancés + support prioritaire |
-| Vibe PME+ | Sur devis | Workspace dédié, DPA perso, SLA |
+| Vibe TPE | 29,99 EUR/user/mois | Vibe Team + Mistral API + support |
+| Vibe PME | 49,99 EUR/user/mois | + connecteurs avances + support prioritaire |
+| Vibe PME+ | Sur devis | Workspace dedie, DPA perso, SLA |

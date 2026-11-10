@@ -143,6 +143,26 @@ docs/assets/         bannière
 index.html           sommaire des rapports (GitHub Pages)
 ```
 
+
+<a id="architecture-deploiement"></a>
+
+## Architecture de deploiement (branche infra/scaleway-mistral-test)
+
+Une architecture IA souveraine a 3 niveaux est documentee sur la branche <code>infra/scaleway-mistral-test</code> :
+
+| Niveau | Cible | Hebergement | Documentation |
+|---|---|---|---|
+| Confidentiel Defense | OIV, defense, secret industriel | On-premise air-gapped, Slurm + InfiniBand | <a href="docs/architecture/01-niveau-confidentiel-defense.md">doc</a> · <a href="docs/architecture/schemas/niveau-secret-infiniband.svg">schema</a> |
+| Entreprise Cloud | ETI, grands comptes, secteur regule | Scaleway fr-par, Kubernetes, Mistral Compute | <a href="docs/architecture/02-niveau-entreprise-cloud.md">doc</a> |
+| TPE/PME SaaS | TPE, PME, independants | Vibe Enterprise manage, Mistral API UE | <a href="docs/architecture/03-niveau-tpe-pme-saas.md">doc</a> |
+
+Schemas : <a href="docs/architecture/schemas/architecture-globale.svg">architecture globale</a> · <a href="docs/architecture/schemas/flux-donnees.svg">flux de donnees</a>
+
+Deploiement : <a href="docs/deploiement/llm-gateway-litellm.md">LiteLLM Gateway</a> · <a href="docs/deploiement/slurm-infiniband-onprem.md">Slurm InfiniBand on-prem</a> · <a href="docs/deploiement/scaleway-terraform.md">Terraform Scaleway</a>
+
+Agent Vibe : <a href=".vibe/agents/souverain-architect.toml">souverain-architect</a>
+
+
 <a id="avertissements"></a>
 
 ## Avertissements

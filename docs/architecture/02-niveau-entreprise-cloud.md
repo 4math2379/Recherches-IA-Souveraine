@@ -1,67 +1,39 @@
-# 🏢 Niveau 2 — Entreprise Cloud Souverain
+# Niveau 2 — Entreprise Cloud Souverain
 > Scaleway / Mistral Compute pour ETI et grands comptes
 
 ---
 
-## ☁️ Architecture
+## Architecture
 
-```
-INTERNET (TLS 1.3)
-    │ VPN/IPSec
-    ▼
-┌──────────────────────────────────────┐
-│   SCALEWAY VPC (Paris, France) 🇫🇷    │
-│  ┌─────────┐ ┌─────────┐ ┌────────┐ │
-│  │ Kapsule │ │ LiteLLM │ │ Mistral│ │
-│  │  K8s    │ │ Gateway │ │Compute │ │
-│  └────┬────┘ └────┬────┘ └───┬────┘ │
-│       │           │          │      │
-│  ┌────┴───────────┴────┐     │      │
-│  │  GPU Scaleway       │←────┘      │
-│  │  L4/L40S/H100       │            │
-│  └─────────────────────┘            │
-└──────────────────────────────────────┘
-```
+- Reseau : VPC prive Scaleway fr-par-1, VPN IPSec
+- Orchestration : Kubernetes Kapsule (Cilium CNI)
+- Gateway : LiteLLM (2 pods HA)
+- Modeles : Mistral API La Plateforme UE ou vLLM self-hosted sur GPU Scaleway
+- Stockage : Object Storage S3 UE, PostgreSQL manage
+- Securite : pas d'IP publique sur les GPU, secrets dans Secret Manager
 
----
-
-## 🧩 Composants
-
-| Composant | Technologie | Rôle |
-|-----------|-------------|------|
-| Compute GPU | Scaleway L40S/H100 | Inférence self-hosted |
-| Orchestration | Kapsule K8s | Vibe, LiteLLM, monitoring |
-| Gateway | LiteLLM (2 pods HA) | Routing, quotas, cache |
-| Modèles | Mistral API ou vLLM | Inférence |
-| Stockage | Object Storage S3 UE | Documents, embeddings |
-| BDD | PostgreSQL managé | Données Vibe |
-| Réseau | VPC privé + VPN IPSec | Isolation |
-| Identité | SSO (SAML/OIDC) | Authentification |
-
----
-
-## 🔐 Conformité
+## Conformite
 
 | Exigence | Solution |
 |----------|----------|
-| RGPD | DPA signé, données UE |
+| RGPD | DPA signe, donnees UE |
 | NIS2 | MFA, logs, segmentation |
 | DORA | HA multi-AZ, PRA |
-| AI Act | Traçabilité, documentation |
-| Cloud Act | ✅ Immune (droit UE uniquement) |
-| SecNumCloud | ✅ Scaleway/Mistral éligibles |
+| AI Act | Tracabilite, documentation |
+| Cloud Act | Immune (droit UE uniquement) |
+| SecNumCloud | Scaleway/Mistral eligibles |
 
----
+## Deploiement
 
-## 📋 Déploiement
-👉 [docs/deploiement/scaleway-terraform.md](../deploiement/scaleway-terraform.md)
+Voir [scaleway-terraform.md](../deploiement/scaleway-terraform.md)
 
-## 💰 Coût indicatif/mois
-| Poste | Coût |
+## Cout indicatif/mois
+
+| Poste | Cout |
 |-------|------|
-| GPU Scaleway (2x H100) | 3-8k€ |
-| K8s + nœuds CPU | 500-1500€ |
-| Stockage + BDD | 200-500€ |
-| LiteLLM + monitoring | 300-800€ |
-| API Mistral (si usage API) | 500-5k€ |
-| **Total** | **~5k-15k€/mois** |
+| GPU Scaleway (2x H100) | 3-8k EUR |
+| K8s + noeuds CPU | 500-1500 EUR |
+| Stockage + BDD | 200-500 EUR |
+| LiteLLM + monitoring | 300-800 EUR |
+| API Mistral | 500-5k EUR |
+| **Total** | **~5k-15k EUR/mois** |
