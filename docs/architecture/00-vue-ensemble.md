@@ -1,68 +1,63 @@
-# 🏛️ Vue d'ensemble — Architecture IA Souveraine 3 Niveaux
+# Vue d'ensemble — Architecture IA Souveraine 3 Niveaux
 
 > **Document** : Architecture globale
 > **Version** : 1.0 — Novembre 2026
 
 ---
 
-## 🎯 Principe directeur
+## Principe directeur
 
-Une **même plateforme Vibe/Mistral**, déployée à **3 niveaux de sécurité** :
+Une meme plateforme Vibe/Mistral, deployee a 3 niveaux de securite :
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    PLATEFORME VIBE (Mistral)                  │
-│         Agents · Connecteurs MCP · LLM Gateway LiteLLM        │
-├─────────────────────────────────────────────────────────────┤
-│  🥇 NIVEAU SECRET          │  🥈 NIVEAU ENTREPRISE           │  🥉 NIVEAU TPE/PME           │
-│  Confidentiel Défense      │  Cloud Souverain                 │  SaaS Managé                 │
-│  On-premise air-gapped     │  Scaleway / Mistral Compute      │  Vibe Enterprise             │
-└─────────────────────────────────────────────────────────────┘
-```
+| Niveau | Cible | Hebergement | Securite |
+|--------|-------|-------------|----------|
+| Niveau 1 — Confidentiel Defense | OIV, defense, secret industriel | On-premise air-gapped | Maximale |
+| Niveau 2 — Entreprise Cloud | ETI, grands comptes, secteur regule | Scaleway / Mistral Compute | Elevee |
+| Niveau 3 — TPE/PME SaaS | TPE, PME, independants | Vibe Enterprise manage | Standard souveraine |
 
 ---
 
-## 🥇 Niveau 1 — Confidentiel Défense / Secret
+## Niveau 1 — Confidentiel Defense / Secret
 
-| Aspect | Détail |
+| Aspect | Detail |
 |--------|--------|
-| **Clients** | OIV, ministère des Armées, industrie de défense, nucléaire |
-| **Hébergement** | On-premise, air-gapped |
-| **Réseau** | InfiniBand interne, aucune connexion Internet |
-| **Orchestration** | Slurm + InfiniBand spine-leaf, vLLM multi-nœuds |
-| **Modèles** | Mistral open-weights (Apache 2.0) locaux |
-| **Gateway** | LiteLLM on-prem, aucune route externe |
-| **Accès** | Réseau classifié, MFA, habilitation |
+| Clients | OIV, ministere des Armees, industrie de defense, nucleaire |
+| Hebergement | On-premise, air-gapped |
+| Reseau | InfiniBand interne, aucune connexion Internet |
+| Orchestration | Slurm + InfiniBand spine-leaf, vLLM multi-noeuds |
+| Modeles | Mistral open-weights (Apache 2.0) locaux |
+| Gateway | LiteLLM on-prem, aucune route externe |
+| Acces | Reseau classifie, MFA, habilitation |
 
-👉 Voir [01-niveau-confidentiel-defense.md](01-niveau-confidentiel-defense.md)
+Voir [01-niveau-confidentiel-defense.md](01-niveau-confidentiel-defense.md)
 
 ---
 
-## 🥈 Niveau 2 — Entreprise Cloud Souverain
+## Niveau 2 — Entreprise Cloud Souverain
 
-| Aspect | Détail |
+| Aspect | Detail |
 |--------|--------|
-| **Clients** | ETI, grands comptes, banques, santé, collectivités |
-| **Hébergement** | Scaleway (GPU France), Mistral Compute |
-| **Réseau** | VPC privé, VPN/IPSec |
-| **Orchestration** | Kubernetes Kapsule ou VM GPU |
-| **Modèles** | Mistral API La Plateforme ou self-hosted Scaleway |
-| **Gateway** | LiteLLM sur Scaleway |
-| **Conformité** | DPA RGPD, NIS2, DORA, AI Act |
+| Clients | ETI, grands comptes, banques, sante, collectivites |
+| Hebergement | Scaleway (GPU France), Mistral Compute |
+| Reseau | VPC prive, VPN/IPSec |
+| Orchestration | Kubernetes Kapsule ou VM GPU |
+| Modeles | Mistral API La Plateforme ou self-hosted Scaleway |
+| Gateway | LiteLLM sur Scaleway |
+| Conformite | DPA RGPD, NIS2, DORA, AI Act |
 
-👉 Voir [02-niveau-entreprise-cloud.md](02-niveau-entreprise-cloud.md)
+Voir [02-niveau-entreprise-cloud.md](02-niveau-entreprise-cloud.md)
 
 ---
 
-## 🥉 Niveau 3 — TPE/PME SaaS
+## Niveau 3 — TPE/PME SaaS
 
-| Aspect | Détail |
+| Aspect | Detail |
 |--------|--------|
-| **Clients** | TPE, PME, indépendants |
-| **Hébergement** | Vibe Enterprise managé CCL |
-| **Réseau** | Internet standard, TLS 1.3 |
-| **Modèles** | Mistral Large via API (hébergement UE) |
-| **Gateway** | LiteLLM managé, quotas par client |
-| **Conformité** | DPA RGPD signé |
+| Clients | TPE, PME, independants |
+| Hebergement | Vibe Enterprise manage CCL |
+| Reseau | Internet standard, TLS 1.3 |
+| Modeles | Mistral Large via API (hebergement UE) |
+| Gateway | LiteLLM manage, quotas par client |
+| Conformite | DPA RGPD signe |
 
-👉 Voir [03-niveau-tpe-pme-saas.md](03-niveau-tpe-pme-saas.md)
+Voir [03-niveau-tpe-pme-saas.md](03-niveau-tpe-pme-saas.md)

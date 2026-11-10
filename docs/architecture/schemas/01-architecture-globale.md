@@ -1,30 +1,9 @@
-# 🏛️ Schéma global — Architecture IA Souveraine 3 Niveaux
+# Schema global — Architecture IA Souveraine 3 Niveaux
 
 <p align="center">
   <img src="architecture-globale.svg" alt="Architecture IA Souveraine 3 niveaux" width="100%">
 </p>
 
----
-
-## Version Mermaid (éditable)
-
-```mermaid
-flowchart TB
-    subgraph N1["🥇 Niveau 1 — Confidentiel Défense (On-prem air-gapped)"]
-        C1["👤 Client Vibe<br/>réseau classifié"] --> GW1["🔀 LiteLLM Gateway<br/>on-prem, air-gapped"]
-        GW1 --> SLURM["⚙️ Slurm + SlurmDBD"]
-        SLURM --> VLLM1["🧠 vLLM multi-nœuds"]
-        VLLM1 --> GPU1["🖥️ Cluster GPU NVIDIA<br/>InfiniBand HDR spine-leaf"]
-    end
-    subgraph N2["🥈 Niveau 2 — Entreprise Cloud (Scaleway fr-par)"]
-        C2["👤 Client Vibe<br/>VPN/SSO"] --> GW2["🔀 LiteLLM K8s HA"]
-        GW2 --> API2["🌐 Mistral API UE<br/>ou vLLM Scaleway"]
-    end
-    subgraph N3["🥉 Niveau 3 — TPE/PME SaaS (CCL)"]
-        C3["👤 Client Vibe<br/>navigateur"] --> GW3["🔀 LiteLLM managé"]
-        GW3 --> API3["🌐 Mistral API UE<br/>DPA RGPD"]
-    end
-    style N1 fill:#ffebee,stroke:#c62828
-    style N2 fill:#e3f2fd,stroke:#1565c0
-    style N3 fill:#e8f5e9,stroke:#2e7d32
-```
+Voir aussi :
+- [Niveau Confidentiel Defense](02-niveau-secret-onprem.md)
+- [Flux de donnees](03-flux-donnees.md)
