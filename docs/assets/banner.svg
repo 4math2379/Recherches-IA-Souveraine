@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t d">
+<title id="t">Recherches : IA souveraine</title>
+<desc id="d">Bannière : trois couches empilées (cloud européen Scaleway et Mistral, usine d'IA NVIDIA InfiniBand sur site, clusters GPU Slurm) dans un cercle d'étoiles européen, à côté du titre du dépôt et de ses technologies : Mistral AI, Scaleway, NVIDIA InfiniBand, Slurm, Terraform, GitHub Actions.</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d1117"/><stop offset="0.55" stop-color="#101a17"/><stop offset="1" stop-color="#0f2a24"/></linearGradient>
+<radialGradient id="glow" cx="0.76" cy="0.5" r="0.42"><stop offset="0" stop-color="#44C4A4" stop-opacity="0.26"/><stop offset="1" stop-color="#44C4A4" stop-opacity="0"/></radialGradient>
+<symbol id="star" viewBox="-10 -10 20 20"><path d="M0,-9 L2.1,-2.9 8.6,-2.8 3.4,1.1 5.3,7.3 0,3.6 -5.3,7.3 -3.4,1.1 -8.6,-2.8 -2.1,-2.9 Z" fill="#FFCC00"/></symbol>
+<style>
+text { font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+.title { font-size: 50px; font-weight: 700; fill: #f0f6fc; }
+.accent { fill: #44C4A4; }
+.tag { font-size: 21px; fill: #9da7b3; }
+.chip { font-size: 14px; font-weight: 600; fill: #e6edf3; }
+.lname { font-size: 16px; font-weight: 700; fill: #f0f6fc; }
+.lsub { font-size: 12.5px; fill: #c3cbd4; }
+.lbl { font-size: 12px; fill: #8b949e; }
+</style>
+</defs>
+<rect width="1280" height="400" rx="18" fill="url(#bg)"/>
+<rect width="1280" height="400" rx="18" fill="url(#glow)"/>
+
+<!-- left: title -->
+<text class="title" x="64" y="142">Recherches : <tspan class="accent">IA souveraine</tspan></text>
+<text class="tag" x="66" y="190">Héberger de l'IA générative en restant</text>
+<text class="tag" x="66" y="220">maître de ses données : notes, architectures, Terraform.</text>
+<g transform="translate(66 256)">
+  <rect width="104" height="32" rx="16" fill="#1f2937" stroke="#FA520F"/><text class="chip" x="17" y="21">Mistral AI</text>
+  <rect x="114" width="96" height="32" rx="16" fill="#1f2937" stroke="#8B5CF6"/><text class="chip" x="131" y="21">Scaleway</text>
+  <rect x="220" width="168" height="32" rx="16" fill="#1f2937" stroke="#76B900"/><text class="chip" x="237" y="21">NVIDIA InfiniBand</text>
+  <rect x="398" width="70" height="32" rx="16" fill="#1f2937" stroke="#44C4A4"/><text class="chip" x="415" y="21">Slurm</text>
+  <rect x="478" width="102" height="32" rx="16" fill="#1f2937" stroke="#7B42BC"/><text class="chip" x="495" y="21">Terraform</text>
+</g>
+<text class="lbl" x="66" y="334">Recherches menées en septembre et octobre 2026 · rapports en français</text>
+
+<!-- right: European star ring -->
+<g transform="translate(980 200)" opacity="0.9">
+  <use href="#star" x="-10" y="-176" width="20" height="20"/>
+  <use href="#star" x="78" y="-153" width="20" height="20"/>
+  <use href="#star" x="142" y="-89" width="20" height="20"/>
+  <use href="#star" x="166" y="-10" width="20" height="20"/>
+  <use href="#star" x="142" y="69" width="20" height="20"/>
+  <use href="#star" x="78" y="133" width="20" height="20"/>
+  <use href="#star" x="-10" y="156" width="20" height="20"/>
+  <use href="#star" x="-98" y="133" width="20" height="20"/>
+  <use href="#star" x="-162" y="69" width="20" height="20"/>
+  <use href="#star" x="-186" y="-10" width="20" height="20"/>
+  <use href="#star" x="-162" y="-89" width="20" height="20"/>
+  <use href="#star" x="-98" y="-153" width="20" height="20"/>
+</g>
+
+<!-- right: the three layers -->
+<g transform="translate(850 92)">
+  <!-- cloud européen -->
+  <rect width="260" height="62" rx="12" fill="#1c1530" stroke="#8B5CF6" stroke-width="1.5"/>
+  <path d="M22 40 h30 a10 10 0 0 0 0 -20 a14 14 0 0 0 -27 -2 a9 9 0 0 0 -3 22 z" fill="none" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="lname" x="72" y="27">Cloud européen</text>
+  <text class="lsub" x="72" y="46">Mistral sur Scaleway, région Paris</text>
+
+  <!-- usine d'IA -->
+  <rect y="78" width="260" height="62" rx="12" fill="#14200d" stroke="#76B900" stroke-width="1.5"/>
+  <g stroke="#b9e86b" stroke-width="1.6" fill="#b9e86b">
+    <line x1="24" y1="96" x2="52" y2="96"/><line x1="24" y1="122" x2="52" y2="122"/>
+    <line x1="24" y1="96" x2="52" y2="122"/><line x1="24" y1="122" x2="52" y2="96"/>
+    <circle cx="24" cy="96" r="4"/><circle cx="52" cy="96" r="4"/><circle cx="24" cy="122" r="4"/><circle cx="52" cy="122" r="4"/>
+  </g>
+  <text class="lname" x="72" y="105">Usine d'IA sur site</text>
+  <text class="lsub" x="72" y="124">GPU NVIDIA reliés par InfiniBand</text>
+
+  <!-- clusters GPU -->
+  <rect y="156" width="260" height="62" rx="12" fill="#0f2421" stroke="#44C4A4" stroke-width="1.5"/>
+  <g fill="#9be3cf">
+    <rect x="20" y="172" width="10" height="10" rx="2"/><rect x="34" y="172" width="10" height="10" rx="2"/><rect x="48" y="172" width="10" height="10" rx="2"/>
+    <rect x="20" y="186" width="10" height="10" rx="2"/><rect x="34" y="186" width="10" height="10" rx="2"/><rect x="48" y="186" width="10" height="10" rx="2" opacity="0.45"/>
+    <rect x="20" y="200" width="10" height="10" rx="2" opacity="0.45"/><rect x="34" y="200" width="10" height="10" rx="2"/><rect x="48" y="200" width="10" height="10" rx="2"/>
+  </g>
+  <text class="lname" x="72" y="183">Clusters GPU</text>
+  <text class="lsub" x="72" y="202">Ordonnancés avec Slurm</text>
+</g>
+</svg>
