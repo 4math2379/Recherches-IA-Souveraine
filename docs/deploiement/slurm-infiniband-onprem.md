@@ -1,29 +1,20 @@
-# ⚙️ Déploiement On-Premise — Slurm + InfiniBand (Niveau Secret)
-> Basé sur le lab CCL_Lab_Slurm_InfiniBand — Slurm 26.05 + OpenSM + fabric IB
+# Deploiement On-Premise — Slurm + InfiniBand (Niveau Confidentiel Defense)
+
+> Base sur le lab CCL_Lab_Slurm_InfiniBand — Slurm 26.05 + OpenSM + fabric IB
 
 ---
 
-## 🖥️ Topologie production
+## Topologie production
 
-```
-         ┌─────────────┐
-         │ SPINE SWITCH │  NDR 400Gb/s, 2x pour HA
-         └──────┬──────┘
-    ┌───────────┼───────────┐
-    ▼           ▼           ▼
-┌───────┐   ┌───────┐   ┌───────┐
-│ LEAF 1│   │ LEAF 2│   │ LEAF 3│
-│36p HDR│   │36p HDR│   │36p HDR│
-└─┬─┬─┬─┘   └─┬─┬─┬─┘   └─┬─┬─┬─┘
-  │ │ │       │ │ │       │ │ │
- gpu nodes (8x H100 80GB chacun)
-```
+Voir le schema : [niveau-secret-infiniband.svg](../architecture/schemas/niveau-secret-infiniband.svg)
 
----
+- 2x Spine switches (NDR 400Gb/s)
+- 3x Leaf switches (HDR 200Gb/s)
+- 6+ noeuds GPU (8x H100 80GB chacun)
 
-## 🔧 Installation Slurm 26.05
+## Installation Slurm 26.05
+
 ```bash
-# Sur chaque nœud
 sudo apt install -y build-essential libmunge-dev libmariadb-dev munge hwloc
 wget https://download.schedmd.com/slurm/slurm-26.05.4.tar.bz2
 tar xjf slurm-26.05.4.tar.bz2 && cd slurm-26.05.4
@@ -31,20 +22,20 @@ tar xjf slurm-26.05.4.tar.bz2 && cd slurm-26.05.4
 make -j$(nproc) && sudo make install
 ```
 
-## 🌐 Configuration InfiniBand
+## Configuration InfiniBand
+
 ```bash
 sudo apt install -y infiniband-diags opensm
-ibnetdiscover > /etc/slurm26/topology_raw.net
-# Convertir en topology.conf (script ib2slurm.py du lab CCL)
 ibnetdiscover | python3 ib2slurm.py --hosts gpu1,gpu2,gpu3,gpu4,gpu5,gpu6 > /etc/slurm26/topology.conf
-ibstat  # vérifier état des ports HCA
+ibstat
 ```
 
-## 📝 slurm.conf (exemple 6 nœuds)
+## slurm.conf (exemple 6 noeuds)
+
 ```bash
 ClusterName=ccl-secret
 SlurmctldHost=ctrl1
-SlurmctldHost=ctrl2  # backup
+SlurmctldHost=ctrl2
 AuthType=auth/munge
 SelectType=select/cons_tres
 TopologyPlugin=topology/tree
@@ -58,14 +49,16 @@ Prolog=/etc/slurm26/prolog-ib.sh
 PrologFlags=Alloc
 ```
 
-## 👥 Comptes clients et quotas
+## Comptes clients et quotas
+
 ```bash
-sudo sacctmgr add account client-defense -d "Ministère des Armées"
+sudo sacctmgr add account client-defense -d "Ministere des Armees"
 sudo sacctmgr add user jean.dupont account=client-defense
 sudo sacctmgr modify account client-defense set GrpTRES=gres/gpu=16
 ```
 
-## 🧠 vLLM multi-nœuds (NCCL over InfiniBand)
+## vLLM multi-noeuds (NCCL over InfiniBand)
+
 ```bash
 export NCCL_IB_DISABLE=0
 export NCCL_IB_HCA=mlx5_0,mlx5_1
@@ -77,6 +70,3 @@ vllm serve mistralai/Mistral-Large-3 \
   --distributed-executor-backend ray \
   --host 0.0.0.0 --port 8000
 ```
-
-## 🔀 LiteLLM on-prem (air-gapped)
-Voir [llm-gateway-litellm.md](llm-gateway-litellm.md) — tout passe par vLLM local, aucune clé API externe.

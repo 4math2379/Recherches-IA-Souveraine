@@ -1,12 +1,13 @@
-# 🔀 Déploiement LLM Gateway — LiteLLM + Mistral
+# Deploiement LLM Gateway — LiteLLM + Mistral
 
-> Point d'entrée unique pour tous les appels LLM : quotas, routing, cache, fallback.
+> Point d'entree unique pour tous les appels LLM : quotas, routing, cache, fallback.
 
 ---
 
-## 🐳 Docker Compose (TPE/PME & Entreprise)
+## Docker Compose (TPE/PME & Entreprise)
 
 ### docker-compose.yml
+
 ```yaml
 version: "3.9"
 services:
@@ -36,6 +37,7 @@ volumes:
 ```
 
 ### config.yaml — Configuration Mistral
+
 ```yaml
 model_list:
   - model_name: mistral-large
@@ -51,7 +53,7 @@ model_list:
     litellm_params:
       model: mistral/codestral-latest
       api_key: os.environ/MISTRAL_API_KEY
-  # Self-hosted on-prem (niveau Secret)
+  # Self-hosted on-prem (niveau Confidentiel Defense)
   - model_name: mistral-local
     litellm_params:
       model: openai/mistral-large-3
@@ -61,22 +63,21 @@ litellm_settings:
   cache: True
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
-  store_audit_logs: True  # logs locaux uniquement (conformité)
+  store_audit_logs: True
 ```
 
----
-
-## 🔐 Sécurité
+## Securite
 
 | Mesure | Config |
 |--------|--------|
-| Auth | Clé master + clés virtuelles par client |
+| Auth | Cle master + cles virtuelles par client |
 | TLS | Ingress nginx/traefik |
-| Réseau | NetworkPolicy K8s (whitelist) |
+| Reseau | NetworkPolicy K8s (whitelist) |
 | Logs | Audit logs locaux uniquement |
 | Secrets | K8s Secrets ou Vault on-prem |
 
-## 🔗 Connexion Vibe → LiteLLM
+## Connexion Vibe vers LiteLLM
+
 ```json
 {
   "model": "mistral-large",

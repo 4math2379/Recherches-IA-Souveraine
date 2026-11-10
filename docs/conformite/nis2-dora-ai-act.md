@@ -1,57 +1,51 @@
-# 🛡️ Conformité NIS2 · DORA · AI Act européen
+# Conformite NIS2 · DORA · AI Act europeen
 
 ---
 
-## 🇪🇺 NIS2 — Cybersécurité
+## NIS2 — Cybersecurite
 
-| Exigence | Implémentation |
+| Exigence | Implementation |
 |----------|----------------|
 | Gestion des risques | Architecture 3 niveaux, segmentation |
-| Sécurité réseau | VPC privé, VPN, IDS/IPS |
+| Securite reseau | VPC prive, VPN, IDS/IPS |
 | Gestion incidents | Notification 72h, SIEM |
-| Continuité | HA, PRA/PCA documenté |
-| Chaîne fourniture | Fournisseurs UE uniquement |
+| Continuite | HA, PRA/PCA documente |
+| Chaine fourniture | Fournisseurs UE uniquement |
 | Auth forte | MFA, SSO |
 
----
+## DORA — Secteur financier
 
-## 🏦 DORA — Secteur financier
-
-| Exigence | Implémentation |
+| Exigence | Implementation |
 |----------|----------------|
-| Gouvernance | RSSI dédié |
+| Gouvernance | RSSI dedie |
 | Risques ICT | Cartographie, stress tests |
-| Tests résilience | Pentest, chaos engineering |
-| Dépendances | Mistral + Scaleway UE, contrats DORA |
+| Tests resilience | Pentest, chaos engineering |
+| Dependances | Mistral + Scaleway UE, contrats DORA |
 
----
+## AI Act europeen (2024/1689)
 
-## 🤖 AI Act européen (2024/1689)
-
-| Catégorie | Notre plateforme | Obligations |
+| Categorie | Notre plateforme | Obligations |
 |-----------|-----------------|-------------|
-| Risque minimal (chatbot) | ✅ Vibe standard | Transparence utilisateur |
-| Haut risque (santé, crédit) | Si client concerné | Doc, logs, supervision humaine |
-| Interdit (social scoring) | ❌ Non proposé | — |
+| Risque minimal (chatbot) | Vibe standard | Transparence utilisateur |
+| Haut risque (sante, credit) | Si client concerne | Doc, logs, supervision humaine |
+| Interdit (social scoring) | Non propose | — |
 
 | Obligation AI Act | Application |
 |-------------------|-------------|
-| Transparence | Info "vous parlez à une IA" |
-| Documentation | Fiche modèle Mistral |
-| Logs/traçabilité | LiteLLM audit logs, 6 mois min |
+| Transparence | Info "vous parlez a une IA" |
+| Documentation | Fiche modele Mistral |
+| Logs/tracabilite | LiteLLM audit logs, 6 mois min |
 | Supervision humaine | Option human-in-the-loop |
 | Robustesse | Architecture 3 niveaux, tests |
 
----
+## Matrice conformite par niveau
 
-## 📊 Matrice conformité par niveau
-
-| Réglementation | 🥇 Secret | 🥈 Entreprise | 🥉 TPE/PME |
-|---------------|:---------:|:------------:|:---------:|
-| RGPD | ✅ | ✅ | ✅ |
-| NIS2 | ✅ | ✅ | ⚠️ via CCL |
-| DORA | ✅ | ✅ | ⚠️ via CCL |
-| AI Act minimal | ✅ | ✅ | ✅ |
-| AI Act haut risque | ✅ | ✅ | ⚠️ |
-| SecNumCloud | on-prem | ✅ | ✅ |
-| Cloud Act US | ✅ Immune | ✅ Immune | ✅ Immune |
+| Reglementation | Secret | Entreprise | TPE/PME |
+|---------------|--------|-----------|---------|
+| RGPD | Oui | Oui | Oui |
+| NIS2 | Oui | Oui | Via CCL |
+| DORA | Oui | Oui | Via CCL |
+| AI Act minimal | Oui | Oui | Oui |
+| AI Act haut risque | Oui | Oui | Selon usage |
+| SecNumCloud | on-prem | Oui | Oui |
+| Cloud Act US | Immune | Immune | Immune |

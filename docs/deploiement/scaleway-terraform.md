@@ -1,21 +1,23 @@
-# ☁️ Déploiement Scaleway — Terraform (Niveau Entreprise)
+# Deploiement Scaleway — Terraform (Niveau Entreprise)
 
 > Infrastructure as Code pour l'architecture cloud souveraine sur Scaleway (fr-par-1).
 
 ---
 
-## 📁 Structure
+## Structure
+
 ```
 terraform/
 ├── main.tf
 ├── variables.tf
-├── vpc.tf        ← réseau privé
+├── vpc.tf        ← reseau prive
 ├── kubernetes.tf ← Kapsule K8s
 ├── gpu.tf        ← instances GPU
 └── secrets.tf    ← Scaleway Secret Manager
 ```
 
-## 🔧 main.tf
+## main.tf
+
 ```hcl
 terraform {
   required_providers {
@@ -23,12 +25,13 @@ terraform {
   }
 }
 provider "scaleway" {
-  region = "fr-par-1"  # Paris, France
+  region = "fr-par-1"
   zone   = "fr-par-1a"
 }
 ```
 
-## 🌐 vpc.tf
+## vpc.tf
+
 ```hcl
 resource "scaleway_vpc_private_network" "ia" {
   name   = "vpc-ia-souveraine"
@@ -36,7 +39,8 @@ resource "scaleway_vpc_private_network" "ia" {
 }
 ```
 
-## ☸️ kubernetes.tf — Kapsule
+## kubernetes.tf — Kapsule
+
 ```hcl
 resource "scaleway_k8s_cluster" "ia" {
   name    = "ia-souveraine"
@@ -53,7 +57,8 @@ resource "scaleway_k8s_cluster" "ia" {
 }
 ```
 
-## 🖥️ gpu.tf — Instances GPU (sans IP publique)
+## gpu.tf — Instances GPU (sans IP publique)
+
 ```hcl
 resource "scaleway_instance_server" "gpu_h100" {
   count  = var.gpu_h100_count
@@ -62,21 +67,22 @@ resource "scaleway_instance_server" "gpu_h100" {
   image  = "ubuntu_jammy"
   region = "fr-par-1"
   private_network { id = scaleway_vpc_private_network.ia.id }
-  # Pas d'IP publique — accès VPN uniquement
 }
 ```
 
-## 🚀 Commandes
+## Commandes
+
 ```bash
 terraform init
 terraform plan -var="gpu_h100_count=2"
 terraform apply -var="gpu_h100_count=2"
 ```
 
-## 🔐 Sécurité
-| Mesure | Implémentation |
+## Securite
+
+| Mesure | Implementation |
 |--------|----------------|
-| Pas d'IP publique GPU | VPC privé uniquement |
+| Pas d'IP publique GPU | VPC prive uniquement |
 | VPN obligatoire | VPN IPSec Scaleway |
-| Secrets chiffrés | Secret Manager |
-| Données en France | Région fr-par-1 |
+| Secrets chiffres | Secret Manager |
+| Donnees en France | Region fr-par-1 |
